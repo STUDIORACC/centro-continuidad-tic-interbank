@@ -12,20 +12,37 @@ Es una aplicación de una sola página, autocontenida, que materializa el plan (
 
 ## Qué incluye
 
-El sistema tiene 12 vistas que cubren las 3 unidades del sílabo:
+El sistema tiene 13 vistas que cubren las 3 unidades del sílabo:
 
 - **Resumen general** — estado operativo, disponibilidad en vivo, riesgos y bitácora.
 - **Continuidad** — 7 servicios críticos y simulador del incidente R1.
-- **Recuperación (DRP)** — RTO/RPO por dominio, pasos del DRP, mitigación y madurez BCMM.
+- **Recuperación (DRP)** — RTO/RPO por dominio, pasos del DRP, mitigación y madurez BCMM; lineamientos DRII, BCI e ISO 22301; roles y procedimiento de activación; gestión de crisis y gobierno del plan; documentación y plan de pruebas.
+- **Estructura del PESI** — la empresa como sistema, alineación estratégica, las 8 partes de un PESI, gerencia de SI y recursos internos.
 - **Estrategia (FODA)** — FODA, IFE/EFE y las 12 estrategias priorizadas.
 - **Arquitecturas de TI** — funcional, de sistemas, de datos e infraestructura.
 - **Plan de acción** — 17 tareas y cronograma de 8 meses (Gantt).
-- **Gobierno de TIC** — órganos de gobierno, el CIO, ISO 38500 y COBIT.
+- **Gobierno de TIC** — órganos de gobierno, el CIO, ISO 38500, COBIT, tipos de gobierno y tipos de organización por tamaño y rubro.
 - **Balanced Scorecard** — 6 objetivos SMART y 19 KPI.
 - **Riesgos** — matriz de calor 5×5 y análisis actual vs. residual.
 - **Proveedores** — terceros críticos con acceso a datos.
-- **Outsourcing / TDR** — decisión de tercerización, TDR y expedientes.
+- **Outsourcing / TDR** — decisión de tercerización, insourcing, outsourcing y crowdsourcing, TDR y expedientes.
 - **Bitácora** — registro de eventos en vivo.
+
+## Cobertura del sílabo
+
+| Unidad | Temas | Dónde está |
+|---|---|---|
+| 1. Planeamiento estratégico de las TI | Empresa como sistema, estrategia de SI, estructura de un PESI, gerencia de SI, recursos internos | Estructura del PESI |
+| | Indicadores de gestión y Balanced Scorecard | Balanced Scorecard |
+| | Arquitecturas funcional, de sistemas, de datos e infraestructura | Arquitecturas de TI |
+| | Insourcing, outsourcing, crowdsourcing, TDR, expedientes y contratos | Outsourcing / TDR |
+| 2. Gestión de la continuidad de negocio | Programa de continuidad, amenazas y riesgos, BIA | Continuidad, Riesgos |
+| | DRII, BCI e ISO; ISO 22301 | Recuperación (DRP) |
+| | Roles, estrategias de recuperación, crisis y desastres, gobierno del plan | Recuperación (DRP) |
+| | Documentación, plan de pruebas y ejercicios; madurez BCMM | Recuperación (DRP) |
+| 3. Gobierno de TIC | Gobierno corporativo, tipos de gobierno, órganos y el CIO | Gobierno de TIC |
+| | ISO 38500, principios de COBIT y su implementación | Gobierno de TIC |
+| | Tipos de organización por tamaño y rubro | Gobierno de TIC |
 
 En la carpeta `entregables/` están la presentación (`.pptx`) y su versión en PDF.
 

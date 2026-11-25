@@ -328,6 +328,17 @@
   .mat .lv.cur .nm{color:var(--brand-ink)}
   .mat .lv.done{background:color-mix(in srgb,var(--good) 8%,var(--surface))}
   .mat .lv .tagc{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;background:var(--brand);color:#fff;padding:1px 7px;border-radius:999px;white-space:nowrap}
+  /* ===== secciones del sílabo (PESI, continuidad, gobierno) ===== */
+  .sysflow{display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr;gap:8px;align-items:stretch}
+  .sysbox{padding:14px;border-radius:11px;background:var(--surface-2);border:1px solid var(--ring)}
+  .sysbox h4{margin:0 0 8px;font-family:var(--display);font-size:13.5px}
+  .sysbox ul{margin:0;padding-left:17px;font-size:12px;color:var(--ink-2)} .sysbox li{margin:4px 0}
+  .sysarrow{display:flex;align-items:center;justify-content:center;color:var(--brand-ink);font-size:20px}
+  @media(max-width:820px){.sysflow{grid-template-columns:1fr}.sysarrow{height:22px;transform:rotate(90deg)}}
+  .go{display:inline-block;margin:9px 6px 0 0;font:inherit;font-size:11px;padding:3px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--brand) 45%,transparent);color:var(--brand-ink);background:transparent;cursor:pointer}
+  .go:hover{background:color-mix(in srgb,var(--brand) 14%,transparent)}
+  td.t2{color:var(--ink-2);font-size:12px}
+  tr.me td{background:color-mix(in srgb,var(--brand) 9%,transparent)}
   @media print{.side,.topbar{display:none}.view{display:block!important}.content{overflow:visible}}
 </style>
 </head>
@@ -353,6 +364,7 @@
       <a data-v="continuidad">{IC_pulse}<span class="t">Continuidad</span><span class="cnt" id="nav-svc">7</span></a>
       <a data-v="recuperacion">{IC_shield}<span class="t">Recuperación (DRP)</span></a>
       <div class="grp">Planeamiento</div>
+      <a data-v="pesi">{IC_list}<span class="t">Estructura del PESI</span></a>
       <a data-v="estrategia">{IC_target}<span class="t">Estrategia (FODA)</span></a>
       <a data-v="arquitectura">{IC_arch}<span class="t">Arquitecturas de TI</span></a>
       <a data-v="plan">{IC_cal}<span class="t">Plan de acción</span><span class="cnt">17</span></a>
@@ -376,7 +388,7 @@
     <header class="topbar">
       <div class="crumb"><h1 id="vTitle">Resumen general</h1><div class="p" id="vSub">Estado consolidado del plan de continuidad TIC</div></div>
       <span class="chip tnum">🕑 <span id="now"></span></span>
-      <span class="chip user"><span class="av">RC</span>R. Coronel · Gerente de Continuidad</span>
+      <span class="chip user"><span class="av">GC</span>Gerente de Continuidad</span>
       <button class="iconbtn" id="printBtn" title="Exportar / imprimir">⤓</button>
       <button class="iconbtn" id="themeBtn" title="Tema">☀︎</button>
     </header>
@@ -474,6 +486,50 @@
           <div class="mat" id="bcmm"></div>
           <div class="hint" id="bcmmTxt" style="margin-top:12px"></div>
         </div>
+
+        <div class="sec">Lineamientos internacionales de continuidad <span class="tag">DRII · BCI · ISO · Unidad 2</span></div>
+        <div class="grid c3" id="lineamientos"></div>
+        <div class="card" style="margin-top:16px">
+          <h2>ISO 22301 <span class="m">— requisitos del sistema de gestión de continuidad (cláusulas 4 a 10) y cómo los cubre el plan</span></h2>
+          <table id="isoTable"></table>
+        </div>
+
+        <div class="sec">Roles, responsabilidades y procedimientos <span class="tag">Unidad 2</span></div>
+        <div class="grid c2">
+          <div class="card">
+            <h2>Roles del programa de continuidad</h2>
+            <table id="rolesTable"></table>
+          </div>
+          <div class="card">
+            <h2>Procedimiento de activación <span class="m">— de la alerta al cierre</span></h2>
+            <div id="activacion"></div>
+          </div>
+        </div>
+
+        <div class="sec">Gestión de crisis y desastres, y gobierno del plan <span class="tag">Unidad 2</span></div>
+        <div class="grid c2">
+          <div class="card">
+            <h2>Niveles de activación <span class="m">— quién decide y qué se activa</span></h2>
+            <table id="nivelesTable"></table>
+          </div>
+          <div class="card">
+            <h2>Comunicación de crisis y gobierno del plan</h2>
+            <dl class="tdr" id="crisisDl"></dl>
+          </div>
+        </div>
+
+        <div class="sec">Documentación de planes y pruebas <span class="tag">Unidad 2</span></div>
+        <div class="grid c2">
+          <div class="card">
+            <h2>Documentación del programa de continuidad</h2>
+            <table id="docsTable"></table>
+            <div class="hint" style="margin-top:10px">Cada documento se revisa una vez al año y después de cada prueba o incidente (propuesta del plan).</div>
+          </div>
+          <div class="card">
+            <h2>Plan de pruebas y ejercicios <span class="m">— frecuencia y estado actual</span></h2>
+            <table id="pruebasTable"></table>
+          </div>
+        </div>
       </section>
 
       <!-- ===== BSC ===== -->
@@ -563,7 +619,7 @@
       <!-- ===== OUTSOURCING / TDR ===== -->
       <section class="view" id="v-outsourcing">
         <div class="card" style="margin-bottom:16px">
-          <h2>Decisión de tercerización <span class="m">— qué servicios de TI tercerizar y bajo qué modalidad (Unidad 4)</span></h2>
+          <h2>Decisión de tercerización <span class="m">— qué servicios de TI tercerizar y bajo qué modalidad · Unidad 1</span></h2>
           <table id="outTable"></table>
         </div>
         <div class="grid c2">
@@ -577,18 +633,18 @@
             <dl id="tdr"></dl>
           </div>
         </div>
-        <div class="sec">Niveles de servicio (SLA) y fases <span class="tag">Semana 14</span></div>
+        <div class="sec">Niveles de servicio (SLA) y fases <span class="tag">Unidad 1 · semanas 4-5</span></div>
         <div class="grid c2">
           <div class="card"><h2>SLA y métricas de seguimiento</h2><table id="slaTable"></table></div>
           <div class="card"><h2>Fases del proceso de tercerización</h2><div id="fases"></div></div>
         </div>
-        <div class="sec">Modelos de aprovisionamiento <span class="tag">Semanas 7-8</span></div>
+        <div class="sec">Modelos de aprovisionamiento <span class="tag">Sesiones 7-8 · semana 4</span></div>
         <div class="card" style="margin-bottom:16px">
           <h2>Insourcing · Outsourcing · Crowdsourcing <span class="m">— cuándo conviene cada uno en Interbank</span></h2>
           <table id="sourcingTable"></table>
         </div>
         <div class="card">
-          <h2>Expediente de convocatoria y contratación <span class="m">— del TDR al contrato · Semana 10</span></h2>
+          <h2>Expediente de convocatoria y contratación <span class="m">— del TDR al contrato · sesiones 9-10 · semana 5</span></h2>
           <div id="expediente"></div>
         </div>
       </section>
@@ -631,12 +687,59 @@
         </div>
         <div class="grid c2" style="margin-top:16px">
           <div class="card">
-            <h2>Tipos de organización y su gobierno <span class="m">— cómo se gestiona la TI según el tamaño</span></h2>
+            <h2>Tipos de organización por tamaño <span class="m">— cómo se gestiona la TI según el tamaño de la empresa</span></h2>
             <table id="orgTypes"></table>
           </div>
           <div class="card">
             <h2>Cómo se implementa COBIT <span class="m">— ciclo de 7 fases aplicado a Interbank</span></h2>
             <div class="princ" id="cobitImpl"></div>
+          </div>
+        </div>
+        <div class="grid c2" style="margin-top:16px">
+          <div class="card">
+            <h2>Gobierno corporativo y tipos de gobierno de TIC <span class="m">— conceptos y modelos</span></h2>
+            <div class="hint" id="gcDef" style="margin-bottom:12px;font-size:12.5px;line-height:1.55"></div>
+            <table id="govTypes"></table>
+            <div class="hint" style="margin-top:10px" id="govTypesTxt"></div>
+          </div>
+          <div class="card">
+            <h2>Tipos de organización por rubro de industria <span class="m">— qué pesa más en el gobierno de TI</span></h2>
+            <table id="orgRubro"></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PESI (Unidad 1) ===== -->
+      <section class="view" id="v-pesi">
+        <div class="card" style="margin-bottom:16px">
+          <h2>La empresa como sistema <span class="m">— Interbank visto como un sistema abierto · Unidad 1, semana 1</span></h2>
+          <div class="sysflow" id="sysflow"></div>
+          <div class="hint" id="sysTxt" style="margin-top:12px;font-size:12px"></div>
+        </div>
+        <div class="grid c2" style="margin-bottom:16px">
+          <div class="card">
+            <h2>Estrategia de SI alineada a la del negocio <span class="m">— misión y visión TIC</span></h2>
+            <dl class="tdr" id="misvis"></dl>
+          </div>
+          <div class="card">
+            <h2>De la estrategia corporativa a los objetivos TIC <span class="m">— alineación</span></h2>
+            <table id="alignTable"></table>
+          </div>
+        </div>
+        <div class="sec">Estructura de un PESI <span class="tag">Unidad 1 · semana 1</span></div>
+        <div class="card" style="margin-bottom:16px">
+          <h2>Las 8 partes de un Plan Estratégico de Sistemas de Información <span class="m">— y dónde está cada una en este sistema</span></h2>
+          <div class="princ" id="pesiParts"></div>
+        </div>
+        <div class="sec">Gerencia de los sistemas de información <span class="tag">Unidad 1 · semana 3</span></div>
+        <div class="grid c2">
+          <div class="card">
+            <h2>La gerencia de SI en el entorno actual</h2>
+            <dl class="tdr" id="gerSI"></dl>
+          </div>
+          <div class="card">
+            <h2>Recursos humanos y tecnológicos internos <span class="m">— situación frente a la meta del plan</span></h2>
+            <table id="recTable"></table>
           </div>
         </div>
       </section>
@@ -742,10 +845,11 @@ function drawDonut(){
 /* ===== navegación ===== */
 const titles={resumen:['Resumen general','Estado consolidado del plan de continuidad TIC'],
   continuidad:['Continuidad operativa','7 servicios críticos · OBJ-1 · RTO máx. 2 h'],
-  recuperacion:['Recuperación ante desastres','RTO/RPO, DRP y mitigación · secciones 7 y 8'],
+  recuperacion:['Recuperación ante desastres','RTO/RPO, DRP, lineamientos, roles, crisis y pruebas · Unidad 2'],
   bsc:['Balanced Scorecard de TI','6 objetivos SMART · 19 KPI · OBJ-3'],
   riesgos:['Gestión de riesgos','ISO 31000 / 27005 / 22301 · OBJ-6'],
   proveedores:['Proveedores críticos','Terceros con acceso a datos · OBJ-2'],
+  pesi:['Estructura del PESI','La empresa como sistema, alineación estratégica y recursos internos · Unidad 1'],
   estrategia:['Estrategia','FODA, IFE/EFE y las 12 estrategias priorizadas'],
   arquitectura:['Arquitecturas de TI','Funcional, de sistemas, de datos e infraestructura · Unidad 1'],
   plan:['Plan de acción','17 tareas · cronograma de 8 meses · nov-26 a jun-27'],
@@ -1032,12 +1136,12 @@ const outs=[
 document.getElementById('outTable').innerHTML=`<tr><th>Servicio de TI</th><th>Decisión</th><th>Modalidad</th><th>Modelo de contratación</th><th>Justificación</th></tr>`+
   outs.map(o=>{const pc=o[1].startsWith('Terceriz')?'p-info':o[1].startsWith('Co')?'p-warn':'p-good';
   return `<tr><td><b>${o[0]}</b></td><td><span class="pill ${pc}">${o[1]}</span></td><td>${o[2]}</td><td class="sub">${o[3]}</td><td class="sub">${o[4]}</td></tr>`;}).join('');
-const evalP=[['Proveedor A','Tarifa baja, poca experiencia en QA',3,5,3],['Proveedor B','Alta experiencia, metodologías ágiles',5,4,4],['Proveedor C','Excelente perfil, excede presupuesto 20 %',5,2,4]];
+const evalP=[['Proveedor A','Tarifa baja, SOC solo en horario de oficina',3,5,3],['Proveedor B','SOC 24/7 con experiencia en banca y reporte a la SBS',5,4,4],['Proveedor C','Excelente perfil, excede el presupuesto en 20 %',5,2,4]];
 function wsum(t,e,f){return (0.4*t+0.3*e+0.3*f);}
-document.getElementById('evalTable').innerHTML=`<tr><th>Proveedor</th><th>Téc. 40%</th><th>Econ. 30%</th><th>Fit 30%</th><th>Total</th></tr>`+
+document.getElementById('evalTable').innerHTML=`<tr><th>Proveedor</th><th>Téc. 40%</th><th>Econ. 30%</th><th>Cumpl. 30%</th><th>Total</th></tr>`+
   evalP.map(p=>{const tot=wsum(p[2],p[3],p[4]);const win=tot===Math.max(...evalP.map(x=>wsum(x[2],x[3],x[4])));
   return `<tr><td><b>${p[0]}</b><div class="sub">${p[1]}</div></td><td class="tnum">${p[2]}</td><td class="tnum">${p[3]}</td><td class="tnum">${p[4]}</td><td><b class="tnum" style="color:${win?'var(--good)':'var(--ink)'}">${tot.toFixed(2)}</b>${win?' ✓':''}</td></tr>`;}).join('');
-document.getElementById('evalPick').innerHTML='Se selecciona el <b>Proveedor B (4.40)</b>: alta experiencia en entornos financieros dentro del tope presupuestal. Ponderación 40 % técnica · 30 % económica · 30 % fit ágil.';
+document.getElementById('evalPick').innerHTML='Se selecciona el <b>Proveedor B (4.40)</b>: SOC 24/7 con experiencia en entornos financieros y dentro del tope presupuestal. Ponderación 40 % técnica · 30 % económica · 30 % cumplimiento (SBS, NDA y estrategia de salida).';
 const tdr=[
  ['Objetivo','Monitoreo de seguridad 24/7 (SOC) y mitigación anti-DDoS para los 7 servicios críticos, con respuesta máx. 10 min.'],
  ['Alcance','SIEM/EDR, scrubbing en la nube, WAF, guardia 24/7 y reporte de incidentes a la SBS en máx. 48 h. Excluye el desarrollo del core.'],
@@ -1047,10 +1151,10 @@ const tdr=[
  ['Contratación','Servicio gestionado con SLA, penalidades y cláusula de salida.'],
 ];
 document.getElementById('tdr').innerHTML=tdr.map(x=>`<dt>${x[0]}</dt><dd>${x[1]}</dd>`).join('');
-const sla=[['Disponibilidad del servicio','mín. 99.9 %','Penalidad por hora incumplida'],['Tiempo de mitigación DDoS','máx. 10 min','Crédito en facturación'],['Tráfico legítimo atendido','mín. 99.9 %','Medición continua'],['Lead Time por incidente crítico','máx. 10 días','SLA estricto'],['Cobertura de pruebas (desarrollo)','mín. 85 %','Requisito de aceptación'],['Aviso de incidentes','máx. 48 h','DS 016-2024-JUS'],['NDA y manejo de datos','Obligatorio','Datos bancarios']];
+const sla=[['Disponibilidad del servicio','mín. 99.9 %','Penalidad por hora incumplida'],['Tiempo de mitigación DDoS','máx. 10 min','Crédito en facturación'],['Tráfico legítimo atendido','mín. 99.9 %','Medición continua'],['Detección y escalamiento de incidente crítico','máx. 15 min','Crédito en facturación (gatillo de R1)'],['Simulacros DDoS con el proveedor','2 por año','Entregable del TDR'],['Aviso de incidentes','máx. 48 h','DS 016-2024-JUS'],['NDA y manejo de datos','Obligatorio','Datos bancarios']];
 document.getElementById('slaTable').innerHTML=`<tr><th>Métrica</th><th>Meta</th><th>Criterio / penalidad</th></tr>`+
   sla.map(s=>`<tr><td><b>${s[0]}</b></td><td class="tnum">${s[1]}</td><td class="sub">${s[2]}</td></tr>`).join('');
-const fases=[['Fase 1 · Análisis','Necesidad, presupuesto tope, modelo de contratación (T&M / squads) y ROI.'],['Fase 2 · Selección','Lanzamiento de RFP, matriz técnica vs. económica, NDA y SLA.'],['Fase 3 · Implementación','Onboarding, accesos y setup de entornos; monitoreo de Lead Time y Cycle Time en dashboards.']];
+const fases=[['Fase 1 · Análisis','Necesidad (R2 y R3), presupuesto tope, modelo de contratación (servicio gestionado con SLA) y ROI.'],['Fase 2 · Selección','Lanzamiento de RFP, matriz técnica vs. económica, NDA y SLA.'],['Fase 3 · Implementación','Onboarding, accesos privilegiados con MFA y runbooks; seguimiento del SLA en el tablero de incidentes.']];
 document.getElementById('fases').innerHTML=fases.map((f,i)=>`<div class="svc"><div class="nm"><b>${f[0]}</b><span>${f[1]}</span></div><span class="tier">${i+1}</span></div>`).join('');
 
 /* ===== presupuesto ===== */
@@ -1174,6 +1278,141 @@ document.getElementById('bcmm').innerHTML=bcmm.map((l,i)=>{
   return `<div class="lv ${c}">${tag}<div class="num">Nivel ${l[0]}</div><div class="nm">${l[1]}</div><div class="num">${l[2]}</div></div>`;
 }).join('');
 document.getElementById('bcmmTxt').innerHTML='Interbank arranca en el <b>nivel 2 (Básico)</b>: tiene controles sueltos pero sin un programa formal probado. El plan lo lleva al <b>nivel 4 (Establecido)</b> con BIA, DRP, simulacros 2/año y métricas, en camino al nivel 5 con la certificación ISO 22301.';
+
+/* ===== helpers de las secciones del sílabo ===== */
+function mkTable(id,head,rows,hl){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML='<tr>'+head.map(h=>`<th>${h}</th>`).join('')+'</tr>'+
+    rows.map((r,ri)=>`<tr${hl===ri?' class="me"':''}>`+r.map((c,i)=>`<td${i?' class="t2"':''}>${i?c:`<b>${c}</b>`}</td>`).join('')+'</tr>').join('');
+}
+function mkDl(id,rows){document.getElementById(id).innerHTML=rows.map(x=>`<dt>${x[0]}</dt><dd>${x[1]}</dd>`).join('');}
+function mkSteps(id,rows){document.getElementById(id).innerHTML=rows.map((e,i)=>`<div class="svc"><span class="tier">${i+1}</span><div class="nm" style="flex:1"><b>${e[0]}</b><span>${e[1]}</span></div></div>`).join('');}
+
+/* ===== UNIDAD 1 · PESI: la empresa como sistema, alineación, estructura, gerencia de SI y recursos ===== */
+const sysBox=(t,items)=>`<div class="sysbox"><h4>${t}</h4><ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+document.getElementById('sysflow').innerHTML=
+  sysBox('Entradas',['Depósitos y capital','Datos de 5.5 M de clientes','Talento y proveedores de TIC','Regulación y supervisión de la SBS'])
+  +'<div class="sysarrow">→</div>'
+  +sysBox('Procesos',['Captación y colocaciones','Pagos y transferencias (Plin)','Canales digitales: app, web, cajeros y agentes','Gestión de riesgos y continuidad'])
+  +'<div class="sysarrow">→</div>'
+  +sysBox('Salidas',['Créditos y servicios financieros','Utilidad de S/ 1,475 M (2025)','Experiencia del cliente (NPS 51)','Cumplimiento regulatorio']);
+document.getElementById('sysTxt').innerHTML='<b style="color:var(--ink)">Entorno:</b> clientes, regulador (SBS), competidores (BCP, BBVA, Yape) y proveedores. <b style="color:var(--ink)">Retroalimentación:</b> el NPS, la disponibilidad y los incidentes vuelven como información para corregir procesos y estrategia, que es el ciclo que mide el Balanced Scorecard.';
+mkDl('misvis',[
+  ['Misión TIC','Proveer y proteger la plataforma tecnológica y de datos que mantiene a Interbank simple, segura y siempre disponible, con IA responsable.'],
+  ['Visión TIC','Al 2030, hacer de Interbank el banco digital más confiable del Perú: disponible 24/7, con datos protegidos y decisiones con IA.'],
+  ['Cómo se alinea','Cada objetivo TIC responde a un pilar de la estrategia corporativa (tabla de la derecha) y se mide en el Balanced Scorecard.'],
+]);
+mkTable('alignTable',['Pilar corporativo','Objetivos TIC','Perspectiva BSC'],[
+  ['Experiencia digital líder','OBJ-1 disponibilidad 99.9 % y RTO 2 h · OBJ-4 NPS de 51 a 54','Procesos · Clientes'],
+  ['Crecimiento rentable','OBJ-4 30 % de consultas resueltas sin agente · OBJ-5 desviación presupuestal ≤ 5 % y eficiencia ≤ 42 %','Clientes · Financiera'],
+  ['Gobierno y cumplimiento corporativo','OBJ-2 100 % de proveedores evaluados y aviso en ≤ 48 h · OBJ-3 tablero de 19 KPI y 90 % del personal capacitado · OBJ-6 tres riesgos bajo 10 puntos','Procesos · Aprendizaje · Riesgos'],
+]);
+const pesiParts=[
+  ['Diagnóstico de la situación actual','Dónde está Interbank hoy: FODA, IFE/EFE, matriz de perfil competitivo y riesgos.',[['estrategia','Estrategia (FODA)'],['riesgos','Riesgos']]],
+  ['Misión, visión y objetivos','Hacia dónde va la TI: misión y visión TIC y 6 objetivos SMART alineados al negocio.',[['bsc','Balanced Scorecard']]],
+  ['Estrategias','12 estrategias que cruzan el FODA; pasan al plan las de prioridad alta (impacto × viabilidad).',[['estrategia','Estrategias priorizadas']]],
+  ['Arquitectura de TI objetivo','Las 4 capas (funcional, de sistemas, de datos e infraestructura) y cómo se adquiere cada componente.',[['arquitectura','Arquitecturas de TI']]],
+  ['Plan de acción y presupuesto','17 tareas con responsable, un cronograma de 8 meses y S/ 2.67 M de inversión.',[['plan','Plan de acción']]],
+  ['Recursos y adquisiciones','Personal y tecnología internos, insourcing, outsourcing y crowdsourcing, TDR y contratos.',[['outsourcing','Outsourcing / TDR']]],
+  ['Riesgos y continuidad','Riesgos priorizados, RTO/RPO, plan de recuperación y madurez BCMM.',[['riesgos','Riesgos'],['recuperacion','Recuperación (DRP)'],['continuidad','Continuidad']]],
+  ['Gobierno, indicadores y seguimiento','Gobierno de TIC (CIO, ISO 38500 y COBIT) y tablero BSC con 19 KPI.',[['gobierno','Gobierno de TIC'],['bsc','Balanced Scorecard']]],
+];
+document.getElementById('pesiParts').innerHTML=pesiParts.map((p,i)=>`<div class="pr"><div class="n">${i+1}</div><h4>${p[0]}</h4><p>${p[1]}</p>${p[2].map(l=>`<button class="go" data-go="${l[0]}">${l[1]} →</button>`).join('')}</div>`).join('');
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>openView(b.dataset.go));
+mkDl('gerSI',[
+  ['De soporte a habilitador','La gerencia de SI deja de ser un área de soporte y habilita la estrategia: el 84 % de los clientes retail ya es digital, así que una caída de la TI es una caída del negocio.'],
+  ['Qué gestiona','La estrategia TIC, el presupuesto (S/ 2.67 M del plan), los riesgos tecnológicos, los proveedores críticos y la continuidad de los servicios.'],
+  ['Retos del entorno actual','Disponibilidad 24/7, regulación de la SBS (restablecer pagos en máx. 3 h y avisar brechas en 48 h), ciberamenazas, terceros con acceso a datos e inteligencia artificial responsable.'],
+  ['Quién la ejerce','El CIO, que responde ante el directorio y el Comité de Gobierno de TI (ver Gobierno de TIC).'],
+]);
+mkTable('recTable',['Tipo','Recurso','Situación frente a la meta','Acción del plan'],[
+  ['Personas','Personal capacitado','68 % hoy · meta mín. 90 % (OBJ-3)','Capacitar en ISO 22301, COBIT e incidentes (tarea 9)'],
+  ['Personas','Equipo de continuidad, NOC y arquitectura','Ejecutan el DRP de R1 y R2','Personal adicional: S/ 144,000 en el presupuesto'],
+  ['Personas','Seguridad (CISO y CSIRT)','MFA en cuentas privilegiadas 92 % · meta 100 %','Cerrar la brecha de MFA (R3)'],
+  ['Tecnología','Core bancario y datacenter principal','Recurso crítico; se mantiene in-house','Insourcing y sitio alterno para el DRP'],
+  ['Tecnología','Servidores críticos con EDR','88 % hoy · meta 100 %','EDR y pentesting por proyecto (tareas 12-13)'],
+  ['Tecnología','Copias inmutables','96 % de restauraciones exitosas · meta mín. 95 %','Se mantienen internas (RPO máx. 1 h)'],
+]);
+
+/* ===== UNIDAD 2 · lineamientos DRII / BCI / ISO, roles, crisis, documentación y pruebas ===== */
+const lin=[
+  ['DRII · DRI International','Professional Practices · 10 prácticas profesionales',['Inicio y gestión del programa','Evaluación de riesgos','Análisis de impacto (BIA)','Estrategias de continuidad','Respuesta a incidentes','Desarrollo e implementación del plan','Concientización y capacitación','Ejercicios, evaluación y mantenimiento','Comunicación de crisis','Coordinación con entidades externas'],'el plan cubre riesgos (R1 a R4), BIA (tarea 1), estrategias de recuperación (DRP), ejercicios 2 veces al año y capacitación (tarea 9).'],
+  ['BCI · Business Continuity Institute','Good Practice Guidelines · 6 prácticas profesionales',['Política y gestión del programa','Incorporación en la cultura (embedding)','Análisis: impacto y riesgos','Diseño: estrategias y soluciones','Implementación: planes y respuesta','Validación: ejercicios, mantenimiento y revisión'],'se usa como guía del ciclo de vida: gobierno, análisis (BIA y riesgos), diseño (RTO/RPO), implementación (DRP) y validación (simulacros y BSC).'],
+  ['ISO 22301','Sistemas de gestión de continuidad del negocio · requisitos',['Norma certificable (ISO 22301:2019)','Estructura de alto nivel: cláusulas 4 a 10','Ciclo Planificar, Hacer, Verificar y Actuar','Guía: ISO 22313. Riesgos: ISO 31000 y 27005'],'es la meta final del plan: llegar al nivel 5 de madurez BCMM con la certificación ISO 22301.'],
+];
+document.getElementById('lineamientos').innerHTML=lin.map(l=>`<div class="card"><h2>${l[0]}</h2><div class="hint" style="margin:-6px 0 10px">${l[1]}</div><div class="chips">${l[2].map(x=>`<span class="ch">${x}</span>`).join('')}</div><div class="hint" style="margin-top:12px"><b style="color:var(--ink)">En Interbank:</b> ${l[3]}</div></div>`).join('');
+mkTable('isoTable',['Cláusula','Tema','Qué exige','Cómo lo cubre el plan'],[
+  ['4','Contexto de la organización','Partes interesadas y alcance del sistema','Clientes, SBS y directorio; alcance: los 7 servicios críticos'],
+  ['5','Liderazgo','Compromiso de la dirección, política y roles','Directorio y Comité de Gobierno de TI, Gerente de continuidad y comité de crisis'],
+  ['6','Planificación','Riesgos, oportunidades y objetivos de continuidad','Riesgos R1 a R4; OBJ-1 (99.9 % y RTO 2 h) y OBJ-6 (riesgos bajo 10)'],
+  ['7','Soporte','Recursos, competencia, concientización, comunicación y documentación','Personal adicional y capacitación (tarea 9); documentación del programa'],
+  ['8','Operación','BIA, estrategias, planes de continuidad y ejercicios','BIA (tarea 1), DRP de R1 a R3 y simulacros 2 veces al año'],
+  ['9','Evaluación del desempeño','Monitoreo, auditoría interna y revisión por la dirección','Tablero BSC de 19 KPI y reporte trimestral al comité'],
+  ['10','Mejora','No conformidades, acciones correctivas y mejora continua','Lecciones aprendidas de cada prueba; camino a la certificación'],
+]);
+mkTable('rolesTable',['Rol','Responsabilidad','Cuándo actúa'],[
+  ['Directorio y Comité de Gobierno de TI','Aprueba la política de continuidad y supervisa el programa','Revisión periódica y crisis mayores'],
+  ['Comité de crisis','Declara la crisis, autoriza la conmutación y la comunicación','Desde la declaración (0–15 min)'],
+  ['Gerente de continuidad','Coordina el DRP, activa los planes y reporta al comité','15–30 min y durante todo el DRP'],
+  ['NOC / Operaciones','Detecta la falla, la escala y declara el incidente','0–15 min'],
+  ['Arquitecto de infraestructura y su equipo','Conmutan al sitio alterno, prueban y reabren los servicios Tier 1','30–120 min'],
+  ['Arquitecto de redes','Mitiga DDoS y activa el ISP secundario por BGP','R2: máx. 10 min'],
+  ['CISO y CSIRT','Aíslan y restauran en entorno limpio ante extorsión o filtración','R3'],
+  ['Legal y Comunicaciones','Aviso a la SBS y a los clientes y mensajes públicos','R3 y toda crisis'],
+  ['Proveedores críticos (SOC, ISP, nube)','Cumplen el SLA y escalan según el contrato','Según el SLA'],
+]);
+mkSteps('activacion',[
+  ['Detectar','El NOC o el SOC detecta una alerta o un servicio incumple su SLA.'],
+  ['Evaluar y clasificar','Se aplican los gatillos: 2 servicios críticos caídos más de 15 min o pagos caídos más de 30 min (R1).'],
+  ['Declarar','El comité de crisis declara la crisis y activa el DRP.'],
+  ['Ejecutar el DRP','Informar a clientes, conmutar, probar y reabrir los servicios Tier 1 en 120 min.'],
+  ['Cerrar y aprender','Informe posincidente, lecciones aprendidas y ajuste del plan.'],
+]);
+mkTable('nivelesTable',['Nivel','Criterio','Quién decide','Qué se activa'],[
+  ['<span class="pill p-info">Incidente</span>','Un servicio degradado o bajo su SLA, sin pérdida de pagos','NOC / SOC','Procedimiento operativo y escalamiento'],
+  ['<span class="pill p-warn">Crisis</span>','2 servicios críticos caídos más de 15 min o pagos más de 30 min (R1); DDoS con pérdida de paquetes mayor a 20 % por 5 min (R2); cifrado masivo o exfiltración (R3)','Comité de crisis','DRP y plan de comunicación'],
+  ['<span class="pill p-crit">Desastre</span>','Pérdida del sitio principal (por ejemplo, el sismo de R4) o una falla que supera el RTO','Directorio, a propuesta del comité de crisis','Conmutación total al sitio alterno y continuidad del negocio'],
+]);
+mkDl('crisisDl',[
+  ['Comunicación a clientes','Entre los 15 y 30 min se informa por los canales de respaldo (línea 311 9000, WhatsApp) y redes sociales.'],
+  ['Comunicación al regulador','La SBS fija 3 h para restablecer pagos (Res. SBS 0814-2025) y las filtraciones de datos se avisan en máx. 48 h.'],
+  ['Gobierno del plan','El Comité de Gobierno de TI aprueba el plan, el Gerente de continuidad lo mantiene y el Directorio supervisa.'],
+  ['Revisión y mejora','Se revisa después de cada prueba o incidente y se reporta cada trimestre al comité con el BSC.'],
+  ['Presupuesto','S/ 150,000 para gestión de crisis y simulacros.'],
+]);
+mkTable('docsTable',['Documento','Contenido','Responsable'],[
+  ['Política y alcance del programa','Objetivos, alcance (7 servicios críticos) y roles','Comité de Gobierno de TI'],
+  ['BIA e inventario de servicios','Impacto por hora, RTO, RPO y MTPD; valida los supuestos del plan en el mes 1','Gerente de continuidad'],
+  ['Plan de continuidad del negocio (BCP)','Cómo opera el negocio durante la interrupción, por servicio','Gerente de continuidad'],
+  ['Plan de recuperación (DRP) de R1 a R3','Pasos, tiempos, responsables, RTO/RPO y gatillos','Arquitectura e infraestructura'],
+  ['Plan de crisis y comunicaciones','Niveles de activación, comité, mensajes a clientes y a la SBS','Comité de crisis y Comunicaciones'],
+  ['Runbooks y contratos de proveedores','Procedimientos con el SOC, el ISP y la nube; SLA y escalamiento','CISO y Compras'],
+  ['Registro de pruebas y lecciones aprendidas','Resultado de cada ejercicio y acciones correctivas','Gerente de continuidad'],
+]);
+mkTable('pruebasTable',['Ejercicio','Qué valida','Frecuencia','Estado actual'],[
+  ['Revisión de escritorio del comité de crisis','Decisiones, roles y comunicación, sin tocar los sistemas','1 por año (propuesta)','Por programar'],
+  ['Prueba de conmutación al sitio alterno','RTO Tier 1 máx. 2 h (R1)','2 por año','1 de 2 · última prueba 1 h 52'],
+  ['Simulacro DDoS con el proveedor','Mitigación en máx. 10 min (R2)','2 por año','1 de 2 · último 8 min'],
+  ['Simulacro de aviso de incidente de datos','Aviso a la SBS en máx. 48 h (R3)','1 por año (propuesta)','Último simulacro: 36 h'],
+  ['Prueba de restauración de copias inmutables','Restauraciones mín. 95 % y RPO máx. 1 h (R3)','Periódica','96 % de restauraciones exitosas'],
+]);
+
+/* ===== UNIDAD 3 · tipos de gobierno de TIC y tipos de organización por rubro ===== */
+document.getElementById('gcDef').innerHTML='<b style="color:var(--ink)">Gobierno corporativo:</b> el sistema con el que se dirige y controla la empresa (directorio, alta dirección y accionistas). <b style="color:var(--ink)">Gobierno de TIC:</b> la parte de ese sistema que dirige y controla el uso actual y futuro de las TI para que creen valor, gestionen riesgos y cumplan la normativa (ISO 38500).';
+mkTable('govTypes',['Tipo','Cómo se decide','Ventaja','Riesgo'],[
+  ['Centralizado','Un solo órgano corporativo decide arquitectura, inversiones y estándares','Coherencia, ahorro y control','Lentitud y poca cercanía al negocio'],
+  ['Descentralizado','Cada unidad de negocio decide su propia TI','Agilidad y cercanía al negocio','Duplicidad, islas tecnológicas y riesgos dispersos'],
+  ['Híbrido (federal) <span class="pill p-good">Interbank</span>','El centro fija políticas, arquitectura y seguridad; las áreas ejecutan por dominio','Equilibra control y agilidad','Exige reglas claras de decisión'],
+],2);
+document.getElementById('govTypesTxt').innerHTML='En Interbank el Comité de Gobierno de TI y el CIO fijan las políticas, y continuidad, seguridad, arquitectura y NOC ejecutan por dominio. Weill y Ross describen 6 arquetipos de decisión (monarquía de negocio, monarquía de TI, feudal, federal, duopolio de TI y anarquía); el híbrido es el más cercano al federal.';
+mkTable('orgRubro',['Rubro','Prioridad del gobierno de TI','Énfasis típico'],[
+  ['Banca y finanzas (Interbank)','Continuidad, seguridad y cumplimiento regulatorio','RTO en horas, SBS, aviso de incidentes y control de terceros'],
+  ['Comercio y retail','Disponibilidad de canales y picos de demanda','E-commerce, pagos y logística'],
+  ['Salud','Confidencialidad e integridad de los datos del paciente','Historias clínicas y continuidad de la atención'],
+  ['Manufactura e industria','Tecnología de operación y cadena de suministro','Planta, proveedores y mantenimiento'],
+  ['Sector público','Transparencia, contrataciones e interoperabilidad','Servicios al ciudadano y normas del Estado'],
+  ['Telecomunicaciones','Disponibilidad de la red y calidad de servicio','Redundancia y atención de incidentes masivos'],
+],0);
 
 /* ===== bitácora ===== */
 const logs=[];
