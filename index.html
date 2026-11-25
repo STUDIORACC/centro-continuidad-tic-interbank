@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centro de Continuidad TIC · Interbank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#071010; --surface:#0d1917; --surface-2:#132320; --surface-3:#1a302b;
+    --ink:#e9f2ee; --ink-2:#8fa39b; --ink-3:#607069;
+    --grid:#1b2d29; --line:#294039; --ring:rgba(180,255,220,0.08);
+    --brand:#16c46e; --brand-2:#0a8a4b; --brand-ink:#3fe088;
+    --good:#19b24a; --warning:#fbb315; --serious:#f18a59; --critical:#e23c4a;
+    --s1:#43a0f5; --s2:#e76624; --s3:#1bbfa0; --s4:#d7a019; --s5:#ec5f9a; --s7:#9f8cf2;
+    --sh:0 1px 2px rgba(0,0,0,.45),0 10px 30px rgba(0,0,0,.30);
+    --radius:14px;
+    --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --display:"Space Grotesk","Inter",system-ui,sans-serif;
+  }
+  :root[data-theme="light"]{
+    --bg:#eef3f0; --surface:#ffffff; --surface-2:#f2f7f4; --surface-3:#e6efea;
+    --ink:#0c1a15; --ink-2:#54635c; --ink-3:#889991;
+    --grid:#e6efea; --line:#c9d6cf; --ring:rgba(12,26,21,0.09);
+    --brand:#0a9f52; --brand-2:#077a3c; --brand-ink:#0a7d42;
+    --good:#0a9a3f; --warning:#d98a0a; --serious:#e07038; --critical:#d6303e;
+    --s1:#2a7fe0; --s2:#e0622a; --s3:#0a9f86; --s4:#c48a0a; --s5:#d85a90; --s7:#6a4ce2;
+    --sh:0 1px 2px rgba(16,24,20,.05),0 10px 30px rgba(16,24,20,.07);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{color:var(--ink);
+    font-family:var(--font); font-size:14px;
+    line-height:1.5; -webkit-font-smoothing:antialiased; overflow:hidden;
+    background:
+      radial-gradient(1000px 540px at 82% -10%, color-mix(in srgb,var(--brand) 15%,transparent), transparent 58%),
+      radial-gradient(900px 560px at -8% 108%, color-mix(in srgb,var(--brand) 8%,transparent), transparent 55%),
+      var(--bg);}
+  .tnum{font-variant-numeric:tabular-nums}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
+  ::-webkit-scrollbar-thumb:hover{background:var(--line);background-clip:padding-box}
+  ::-webkit-scrollbar-track{background:transparent}
+  /* splash */
+  #splash{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+    background:radial-gradient(700px 400px at 50% 40%,color-mix(in srgb,var(--brand) 16%,var(--bg)),var(--bg));
+    transition:opacity .5s ease,visibility .5s}
+  #splash.hide{opacity:0;visibility:hidden}
+  #splash .mk{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:34px;
+    box-shadow:0 10px 40px rgba(17,178,76,.45);animation:pop .6s cubic-bezier(.2,.8,.2,1)}
+  @keyframes pop{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+  #splash .ti{font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:-.4px}
+  #splash .su{font-size:12.5px;color:var(--ink-2);margin-top:5px}
+  #splash .ldr{width:190px;height:4px;border-radius:999px;background:var(--surface-3);overflow:hidden}
+  #splash .ldr i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand-ink));animation:load 1.1s ease forwards}
+  @keyframes load{to{width:100%}}
+  /* ====== LAYOUT ====== */
+  .app{display:grid; grid-template-columns:238px 1fr; height:100vh}
+  /* sidebar */
+  .side{border-right:1px solid var(--ring);
+    background:linear-gradient(180deg,color-mix(in srgb,var(--brand) 6%,var(--surface)),var(--surface) 22%);
+    display:flex; flex-direction:column; min-height:0}
+  .logo{display:flex; align-items:center; gap:11px; padding:18px 18px 16px}
+  .logo .mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:17px;box-shadow:0 4px 12px rgba(17,178,76,.35)}
+  .logo .nm{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.3px;line-height:1.15}
+  .logo .nm small{display:block;font-weight:500;color:var(--ink-2);font-size:11px;letter-spacing:0}
+  .nav{padding:8px 10px; overflow-y:auto; flex:1}
+  .nav .grp{font-size:11px;letter-spacing:.1px;color:var(--ink-3);
+    padding:15px 10px 6px;font-weight:600}
+  .nav a{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px;
+    color:var(--ink-2);text-decoration:none;font-size:13.5px;font-weight:500;cursor:pointer;
+    transition:.12s;margin-bottom:2px;position:relative}
+  .nav a svg{width:17px;height:17px;flex:none;opacity:.85}
+  .nav a:hover{background:var(--surface-2);color:var(--ink)}
+  .nav a.on{background:color-mix(in srgb,var(--brand) 15%,var(--surface));color:var(--brand-ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brand) 22%,transparent)}
+  .nav a.on::before{content:"";position:absolute;left:-10px;top:8px;bottom:8px;width:3px;
+    border-radius:0 3px 3px 0;background:var(--brand)}
+  .nav a .cnt{margin-left:auto;font-size:11px;background:var(--surface-3);color:var(--ink-2);
+    padding:1px 7px;border-radius:999px;font-variant-numeric:tabular-nums}
+  .nav a.alert .cnt{background:var(--critical);color:#fff}
+  .side-foot{padding:12px 14px;border-top:1px solid var(--ring)}
+  .env{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2)}
+  .env .d{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 rgba(10,172,35,.6);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(10,172,35,.5)}70%{box-shadow:0 0 0 6px rgba(10,172,35,0)}100%{box-shadow:0 0 0 0 rgba(10,172,35,0)}}
+  /* main */
+  .main{display:flex;flex-direction:column;min-width:0;min-height:0}
+  .topbar{display:flex;align-items:center;gap:14px;padding:14px 26px;border-bottom:1px solid var(--ring);background:var(--surface)}
+  .topbar .crumb{flex:1;min-width:0}
+  .topbar .crumb h1{font-family:var(--display);font-size:18px;margin:0;letter-spacing:-.4px;font-weight:600}
+  .topbar .crumb .p{font-size:12px;color:var(--ink-2)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);
+    padding:6px 11px;background:var(--surface-2);border:1px solid var(--ring);border-radius:999px;white-space:nowrap}
+  .chip.user .av{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--s7),var(--s1));
+    color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .iconbtn{width:34px;height:34px;border-radius:9px;border:1px solid var(--ring);background:var(--surface-2);
+    color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:.12s}
+  .iconbtn:hover{background:var(--surface-3)}
+  .content{overflow-y:auto;padding:22px 26px 60px;flex:1}
+  .view{display:none;animation:fade .25s ease}
+  .view.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  /* incident strip */
+  .alertstrip{display:none;align-items:center;gap:12px;padding:11px 16px;border-radius:11px;
+    background:color-mix(in srgb,var(--critical) 16%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--critical) 45%,transparent);margin-bottom:18px;font-size:13px}
+  .alertstrip.on{display:flex}
+  .alertstrip .b{font-weight:700;color:var(--critical)}
+  /* ====== PRIMITIVES ====== */
+  .grid{display:grid;gap:16px}
+  .c4{grid-template-columns:repeat(4,1fr)} .c3{grid-template-columns:repeat(3,1fr)} .c2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:1150px){.c4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:960px){.app{grid-template-columns:62px 1fr}.logo .nm,.nav .grp,.nav a span.t,.side-foot .txt,.nav a .cnt{display:none}.nav a{justify-content:center}}
+  @media(max-width:820px){.c3,.c2{grid-template-columns:1fr}}
+  .card{position:relative;border:1px solid var(--ring);border-radius:var(--radius);padding:18px;box-shadow:var(--sh);
+    background:linear-gradient(180deg,color-mix(in srgb,var(--ink) 3%,var(--surface)),var(--surface));
+    transition:border-color .18s,transform .18s,box-shadow .18s}
+  .card::before{content:"";position:absolute;inset:0 0 auto;height:1px;border-radius:var(--radius) var(--radius) 0 0;
+    background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ink) 14%,transparent),transparent);pointer-events:none}
+  .card:hover{border-color:color-mix(in srgb,var(--brand) 30%,var(--ring))}
+  .card h2{font-family:var(--display);font-size:14.5px;letter-spacing:-.1px;color:var(--ink);margin:0 0 14px;font-weight:600;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .card h2 .m{font-family:var(--font);font-size:12px;font-weight:400;color:var(--ink-3)}
+  .sec{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-.2px;color:var(--ink);margin:28px 0 13px;display:flex;align-items:baseline;gap:10px}
+  .sec:first-child{margin-top:0}
+  .tag{font-size:11px;color:var(--ink-2);background:var(--surface-2);padding:3px 9px;border-radius:999px;border:1px solid var(--ring);font-weight:500}
+  /* tiles */
+  .tile .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .tile .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--surface-2)}
+  .tile .ic svg{width:16px;height:16px}
+  .tile .k{font-family:var(--display);font-size:28px;font-weight:600;letter-spacing:-.8px;line-height:1.05;font-feature-settings:"tnum" 1}
+  .tile .l{color:var(--ink-2);font-size:12px;margin-top:5px}
+  .tile .src{color:var(--ink-3);font-size:10.5px;margin-top:9px}
+  .delta{font-size:11px;font-weight:600;padding:2px 7px;border-radius:999px}
+  .up{color:var(--good);background:color-mix(in srgb,var(--good) 15%,transparent)}
+  .dn{color:var(--critical);background:color-mix(in srgb,var(--critical) 15%,transparent)}
+  /* status pills */
+  .pill{font-size:11px;padding:3px 9px;border-radius:999px;font-weight:600;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+  .pill svg{width:12px;height:12px}
+  .p-good{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+  .p-warn{background:color-mix(in srgb,var(--warning) 20%,transparent);color:var(--warning)}
+  .p-crit{background:color-mix(in srgb,var(--critical) 18%,transparent);color:var(--critical)}
+  .p-info{background:color-mix(in srgb,var(--s1) 16%,transparent);color:var(--s1)}
+  .tier{font-size:10.5px;color:var(--ink-2);border:1px solid var(--ring);padding:2px 7px;border-radius:6px}
+  .mono{font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--ink-2);min-width:62px;text-align:right}
+  /* service rows */
+  .svc{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--grid)}
+  .svc:last-child{border-bottom:0}
+  .svc .nm{flex:1 1 auto;min-width:0} .svc .nm b{font-weight:600} .svc .nm span{color:var(--ink-2);font-size:12px;display:block}
+  /* kpi bars */
+  .kpi{margin-bottom:14px}.kpi:last-child{margin-bottom:0}
+  .kpi .row{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-bottom:6px}
+  .kpi .row .v{font-variant-numeric:tabular-nums;color:var(--ink-2)}.kpi .row .v b{color:var(--ink)}
+  .bar{position:relative;height:8px;background:var(--surface-3);border-radius:999px;overflow:hidden}
+  .bar i{position:absolute;left:0;top:0;height:100%;border-radius:999px;display:block;transition:width .5s}
+  .persp{font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:-.1px;margin:0 0 13px;display:flex;align-items:center;gap:8px}
+  .persp .o{font-size:10.5px;color:var(--ink-2);font-weight:500;border:1px solid var(--ring);padding:2px 7px;border-radius:6px}
+  .persp .ln{flex:1;height:1px;background:var(--grid)}
+  /* DRP */
+  .drp.off{opacity:.45}
+  .drp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .drp-clock{font-family:var(--display);font-size:32px;font-weight:600;letter-spacing:-.8px}
+  .track{position:relative;height:12px;background:var(--surface-3);border-radius:999px;margin:32px 0 10px}
+  .track .fill{position:absolute;left:0;top:0;height:100%;border-radius:999px;background:var(--s1);width:0%;transition:width .25s linear}
+  .mk{position:absolute;top:-26px;transform:translateX(-50%);font-size:10.5px;color:var(--ink-3);text-align:center}
+  .mk::after{content:"";position:absolute;left:50%;top:19px;width:1px;height:20px;background:var(--line)}
+  .mk.meta{color:var(--good)}.mk.meta::after{background:var(--good)}
+  .mk.lim{color:var(--critical)}.mk.lim::after{background:var(--critical)}
+  .phases{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:20px}
+  .ph{padding:11px;border-radius:10px;background:var(--surface-2);border:1px solid var(--ring);font-size:12px}
+  .ph .t{color:var(--ink-3);font-size:11px;margin-bottom:4px}
+  .ph.active{border-color:var(--s1);background:color-mix(in srgb,var(--s1) 13%,var(--surface))}
+  .ph.done{border-color:color-mix(in srgb,var(--good) 45%,transparent)}.ph.done .t{color:var(--good)}
+  .btn{font:inherit;font-size:13px;cursor:pointer;border-radius:9px;border:1px solid var(--ring);background:var(--surface-2);color:var(--ink);padding:9px 15px;transition:.14s;font-weight:500}
+  .btn:hover{background:var(--surface-3)}
+  .btn-danger{background:var(--critical);border-color:transparent;color:#fff;font-weight:600}
+  .btn-danger:hover{filter:brightness(1.08)}
+  .btn-brand{background:var(--brand);border-color:transparent;color:#fff;font-weight:600}
+  .btn-ghost{background:transparent}
+  .hint{font-size:11.5px;color:var(--ink-2)}
+  /* heatmap */
+  .heat{display:grid;grid-template-columns:24px repeat(5,1fr);gap:3px}
+  .heat .lbl{font-size:10.5px;color:var(--ink-3);display:flex;align-items:center;justify-content:center}
+  .heat .cell{position:relative;aspect-ratio:1/1;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.45);font-variant-numeric:tabular-nums}
+  :root[data-theme="light"] .heat .cell{color:rgba(0,0,0,.3)}
+  .b-bajo{background:color-mix(in srgb,var(--good) 28%,var(--surface))}
+  .b-medio{background:color-mix(in srgb,var(--warning) 32%,var(--surface))}
+  .b-alto{background:color-mix(in srgb,var(--serious) 42%,var(--surface))}
+  .b-crit{background:color-mix(in srgb,var(--critical) 48%,var(--surface))}
+  .rmark{position:absolute;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;border:2px solid var(--surface);transition:all .55s cubic-bezier(.4,0,.2,1);z-index:3}
+  .heat-area{position:relative}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:13px;font-size:11.5px;color:var(--ink-2)}
+  .legend .it{display:flex;align-items:center;gap:6px}.legend .sw{width:11px;height:11px;border-radius:3px}
+  .axis-x{text-align:center;font-size:10.5px;color:var(--ink-3);margin-top:7px}
+  .axis-y{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;color:var(--ink-3)}
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th{text-align:left;font-weight:600;color:var(--ink-3);font-size:11.5px;letter-spacing:0;padding:9px 10px;border-bottom:1px solid var(--line)}
+  td{padding:10px;border-bottom:1px solid var(--grid);vertical-align:top}
+  td .sub{color:var(--ink-3);font-size:11px}
+  tr:last-child td{border-bottom:0}
+  /* mit */
+  .mit .hd{display:flex;align-items:center;gap:8px;margin-bottom:10px}.mit .hd .c{font-weight:700}
+  .mit .metrics{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+  .mit .m{background:var(--surface-2);border:1px solid var(--ring);border-radius:8px;padding:7px 9px;flex:1 1 auto;text-align:center}
+  .mit .m .mv{font-size:16px;font-weight:650;font-variant-numeric:tabular-nums}.mit .m .ml{font-size:10.5px;color:var(--ink-2);margin-top:2px}
+  .mit .det{color:var(--ink-2);font-size:11.5px;margin:5px 0}.mit .det b{color:var(--ink);font-weight:600}
+  /* mpc */
+  .mpc .row{display:grid;grid-template-columns:86px 1fr 40px;align-items:center;gap:10px;margin-bottom:12px}
+  .mpc .nm{font-size:12.5px}.mpc .sc{font-variant-numeric:tabular-nums;font-size:12.5px;text-align:right;color:var(--ink-2)}
+  .mpc .b{height:14px;background:var(--surface-3);border-radius:6px;position:relative}.mpc .b i{position:absolute;left:0;top:0;height:100%;border-radius:6px}
+  .goalline{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--brand)}
+  /* bitacora */
+  .log{font-size:12.5px}
+  .log .e{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid var(--grid);align-items:flex-start}
+  .log .e:last-child{border-bottom:0}
+  .log .ts{color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:11.5px;white-space:nowrap;padding-top:1px}
+  .log .lv{width:7px;height:7px;border-radius:50%;margin-top:6px;flex:none}
+  .lv-ok{background:var(--good)}.lv-info{background:var(--s1)}.lv-warn{background:var(--warning)}.lv-crit{background:var(--critical)}
+  .log .msg{flex:1}
+  /* health ring */
+  .health{display:flex;align-items:center;gap:18px}
+  .ring{--p:0;width:92px;height:92px;border-radius:50%;flex:none;
+    background:conic-gradient(var(--good) calc(var(--p)*1%),var(--surface-3) 0);display:flex;align-items:center;justify-content:center}
+  .ring .in{width:72px;height:72px;border-radius:50%;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .in b{font-size:19px;font-variant-numeric:tabular-nums}.ring .in span{font-size:10px;color:var(--ink-2)}
+  .tip{position:fixed;pointer-events:none;z-index:60;background:var(--surface-3);border:1px solid var(--ring);border-radius:8px;padding:7px 10px;font-size:12px;color:var(--ink);box-shadow:var(--sh);opacity:0;transition:opacity .12s;max-width:240px}
+  /* FODA */
+  .foda{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:820px){.foda{grid-template-columns:1fr}}
+  .fq{border-radius:12px;padding:15px;border:1px solid var(--ring)}
+  .fq h3{margin:0 0 10px;font-size:13px;display:flex;align-items:center;gap:8px}
+  .fq .b{width:9px;height:9px;border-radius:3px}
+  .fq ul{margin:0;padding-left:16px}.fq li{font-size:12px;margin-bottom:7px;color:var(--ink-2)}.fq li b{color:var(--ink)}
+  .fq.F{background:color-mix(in srgb,var(--good) 7%,var(--surface))}.fq.F .b{background:var(--good)}
+  .fq.O{background:color-mix(in srgb,var(--s1) 7%,var(--surface))}.fq.O .b{background:var(--s1)}
+  .fq.D{background:color-mix(in srgb,var(--warning) 8%,var(--surface))}.fq.D .b{background:var(--warning)}
+  .fq.A{background:color-mix(in srgb,var(--critical) 8%,var(--surface))}.fq.A .b{background:var(--critical)}
+  .prio{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px}
+  .prio.alta{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+  .prio.media{background:color-mix(in srgb,var(--warning) 20%,transparent);color:var(--warning)}
+  .prio.baja{background:var(--surface-3);color:var(--ink-3)}
+  .scorebar{display:inline-block;width:46px;height:7px;background:var(--surface-3);border-radius:999px;overflow:hidden;vertical-align:middle}
+  .scorebar i{display:block;height:100%;background:var(--brand)}
+  /* gantt */
+  .gantt{font-size:12px;overflow-x:auto}
+  .gtrow{display:grid;grid-template-columns:250px 1fr;align-items:center;min-height:34px;border-bottom:1px solid var(--grid)}
+  .gtrow.head{border-bottom:1px solid var(--line);font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.4px}
+  .gtrow .lab{padding:7px 12px 7px 0;color:var(--ink-2);font-size:11.5px}.gtrow .lab b{color:var(--ink);font-weight:600}
+  .ghead{display:grid;grid-template-columns:repeat(8,1fr)}.ghead div{text-align:center;padding:6px 0}
+  .gtrack{position:relative;height:34px;background:repeating-linear-gradient(to right,transparent 0,transparent calc(12.5% - 1px),var(--grid) calc(12.5% - 1px),var(--grid) 12.5%)}
+  .gbar{position:absolute;top:50%;transform:translateY(-50%);height:12px;border-radius:6px;opacity:.92}
+  /* tdr list */
+  .tdr dt{font-weight:600;font-size:12.5px;margin-top:10px;color:var(--ink)}
+  .tdr dd{margin:3px 0 0;font-size:12px;color:var(--ink-2)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .ch{font-size:11px;padding:4px 9px;border-radius:999px;background:var(--surface-2);border:1px solid var(--ring);color:var(--ink-2)}
+  /* charts */
+  .chart svg{display:block;width:100%;overflow:visible}
+  .chart text{fill:var(--ink-3);font-size:10px}
+  .spark{height:26px;margin-top:10px}
+  .spark svg{width:100%;height:26px;display:block}
+  .donut-wrap{display:flex;align-items:center;gap:18px}
+  .donut-legend{font-size:12px}
+  .donut-legend .r{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .donut-legend .sw{width:10px;height:10px;border-radius:3px}
+  .donut-legend b{font-variant-numeric:tabular-nums}
+  /* hero band */
+  .heroband{display:flex;align-items:center;gap:28px;flex-wrap:wrap;padding:24px 26px;margin-bottom:16px;border-radius:18px;position:relative;overflow:hidden;
+    border:1px solid color-mix(in srgb,var(--brand) 22%,var(--ring));
+    background:linear-gradient(120deg,color-mix(in srgb,var(--brand) 16%,var(--surface)),var(--surface) 55%)}
+  .heroband::after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--brand) 22%,transparent),transparent 70%);pointer-events:none}
+  .heroband .state{display:flex;align-items:center;gap:14px;flex:1 1 300px;position:relative;z-index:1}
+  .heroband .beacon{width:14px;height:14px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 color-mix(in srgb,var(--good) 70%,transparent);animation:pulse 2.4s infinite}
+  .heroband h1{font-family:var(--display);font-size:30px;font-weight:600;letter-spacing:-1px;margin:0;line-height:1.05}
+  .heroband .st-sub{color:var(--ink-2);font-size:13px;margin-top:3px}
+  .heroband .figs{display:flex;gap:30px;position:relative;z-index:1;flex-wrap:wrap}
+  .heroband .fig .v{font-family:var(--display);font-size:24px;font-weight:600;letter-spacing:-.6px;font-feature-settings:"tnum" 1}
+  .heroband .fig .l{color:var(--ink-3);font-size:11.5px;margin-top:2px;max-width:130px}
+  .c2-wide{grid-template-columns:1.8fr 1fr}
+  @media(max-width:820px){.c2-wide{grid-template-columns:1fr}}
+  .budget-bar{display:flex;height:30px;border-radius:9px;overflow:hidden;margin:6px 0 14px;gap:2px;background:var(--surface-3)}
+  .budget-bar span{height:100%;transition:filter .15s}
+  .budget-bar span:hover{filter:brightness(1.15)}
+  .budget-leg{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:12px}
+  .budget-leg .r{display:flex;align-items:center;gap:8px;justify-content:space-between}
+  .budget-leg .nm{display:flex;align-items:center;gap:8px;color:var(--ink-2)}
+  .budget-leg .sw{width:10px;height:10px;border-radius:3px;flex:none}
+  .budget-leg .v{font-variant-numeric:tabular-nums;color:var(--ink)}
+  /* arquitectura layers */
+  .arch-layer{display:flex;align-items:flex-start;gap:14px;padding:15px;border-radius:12px;margin-bottom:10px;border:1px solid var(--ring);position:relative;overflow:hidden}
+  .arch-layer::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+  .arch-layer .ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--surface-2)}
+  .arch-layer .ic svg{width:19px;height:19px}
+  .arch-layer h3{margin:0 0 4px;font-size:13.5px}
+  .arch-layer .dsc{font-size:12px;color:var(--ink-2);margin-bottom:8px}
+  .arch-layer .items{display:flex;flex-wrap:wrap;gap:6px}
+  .al1{background:color-mix(in srgb,var(--s1) 6%,var(--surface))}.al1::before{background:var(--s1)}.al1 .ic{color:var(--s1)}
+  .al2{background:color-mix(in srgb,var(--s3) 6%,var(--surface))}.al2::before{background:var(--s3)}.al2 .ic{color:var(--s3)}
+  .al3{background:color-mix(in srgb,var(--s4) 6%,var(--surface))}.al3::before{background:var(--s4)}.al3 .ic{color:var(--s4)}
+  .al4{background:color-mix(in srgb,var(--s7) 6%,var(--surface))}.al4::before{background:var(--s7)}.al4 .ic{color:var(--s7)}
+  /* principios */
+  .princ{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:820px){.princ{grid-template-columns:1fr}}
+  .pr{padding:13px;border-radius:11px;background:var(--surface-2);border:1px solid var(--ring)}
+  .pr .n{width:24px;height:24px;border-radius:7px;background:var(--brand);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+  .pr h4{margin:0 0 5px;font-size:13px}.pr p{margin:0;font-size:11.5px;color:var(--ink-2)}
+  /* EDM badges */
+  .edm{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+  .edm .e{flex:1 1 150px;text-align:center;padding:12px;border-radius:11px;border:1px solid var(--ring);background:var(--surface-2)}
+  .edm .e b{display:block;font-size:14px;margin-bottom:3px}.edm .e span{font-size:11px;color:var(--ink-2)}
+  /* orgchart */
+  .org{display:flex;flex-direction:column;align-items:center;gap:0}
+  .org .node{padding:9px 16px;border-radius:9px;border:1px solid var(--ring);background:var(--surface-2);font-size:12.5px;font-weight:600;text-align:center}
+  .org .node.top{background:color-mix(in srgb,var(--brand) 14%,var(--surface));border-color:color-mix(in srgb,var(--brand) 30%,transparent);color:var(--brand-ink)}
+  .org .node.cio{background:color-mix(in srgb,var(--s1) 14%,var(--surface));border-color:color-mix(in srgb,var(--s1) 30%,transparent)}
+  .org .conn{width:2px;height:16px;background:var(--line)}
+  .org .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .org .row .node{font-weight:500;font-size:11.5px}
+  /* maturity */
+  .mat{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+  .mat .lv{padding:11px 8px;border-radius:10px;border:1px solid var(--ring);background:var(--surface-2);text-align:center;position:relative}
+  .mat .lv .num{font-size:11px;color:var(--ink-3)}.mat .lv .nm{font-size:12px;font-weight:600;margin:3px 0}
+  .mat .lv.cur{background:color-mix(in srgb,var(--brand) 16%,var(--surface));border-color:var(--brand)}
+  .mat .lv.cur .nm{color:var(--brand-ink)}
+  .mat .lv.done{background:color-mix(in srgb,var(--good) 8%,var(--surface))}
+  .mat .lv .tagc{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;background:var(--brand);color:#fff;padding:1px 7px;border-radius:999px;white-space:nowrap}
+  @media print{.side,.topbar{display:none}.view{display:block!important}.content{overflow:visible}}
+</style>
+</head>
+<body>
+<div id="splash">
+  <div class="mk">i</div>
+  <div style="text-align:center">
+    <div class="ti">Centro de Continuidad TIC</div>
+    <div class="su">Interbank · inicializando panel de control</div>
+  </div>
+  <div class="ldr"><i></i></div>
+</div>
+<div class="app">
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="side">
+    <div class="logo">
+      <div class="mark">i</div>
+      <div class="nm">Continuidad TIC<small>Interbank · Centro de control</small></div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="grp">Operación</div>
+      <a data-v="resumen" class="on">{IC_home}<span class="t">Resumen general</span></a>
+      <a data-v="continuidad">{IC_pulse}<span class="t">Continuidad</span><span class="cnt" id="nav-svc">7</span></a>
+      <a data-v="recuperacion">{IC_shield}<span class="t">Recuperación (DRP)</span></a>
+      <div class="grp">Planeamiento</div>
+      <a data-v="estrategia">{IC_target}<span class="t">Estrategia (FODA)</span></a>
+      <a data-v="arquitectura">{IC_arch}<span class="t">Arquitecturas de TI</span></a>
+      <a data-v="plan">{IC_cal}<span class="t">Plan de acción</span><span class="cnt">17</span></a>
+      <div class="grp">Gobierno</div>
+      <a data-v="gobierno">{IC_gov}<span class="t">Gobierno de TIC</span></a>
+      <div class="grp">Gestión</div>
+      <a data-v="bsc">{IC_grid}<span class="t">Balanced Scorecard</span><span class="cnt">19</span></a>
+      <a data-v="riesgos">{IC_alert}<span class="t">Riesgos</span><span class="cnt">3</span></a>
+      <a data-v="proveedores">{IC_box}<span class="t">Proveedores</span></a>
+      <a data-v="outsourcing">{IC_layers}<span class="t">Outsourcing / TDR</span></a>
+      <div class="grp">Registro</div>
+      <a data-v="bitacora">{IC_list}<span class="t">Bitácora</span></a>
+    </nav>
+    <div class="side-foot">
+      <div class="env"><span class="d" id="envdot"></span><span class="txt" id="envtxt">Operación · en línea</span></div>
+    </div>
+  </aside>
+
+  <!-- ========== MAIN ========== -->
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb"><h1 id="vTitle">Resumen general</h1><div class="p" id="vSub">Estado consolidado del plan de continuidad TIC</div></div>
+      <span class="chip tnum">🕑 <span id="now"></span></span>
+      <span class="chip user"><span class="av">RC</span>R. Coronel · Gerente de Continuidad</span>
+      <button class="iconbtn" id="printBtn" title="Exportar / imprimir">⤓</button>
+      <button class="iconbtn" id="themeBtn" title="Tema">☀︎</button>
+    </header>
+
+    <div class="content">
+      <div class="alertstrip" id="alertStrip">
+        <span class="b">⚡ Incidente R1 activo</span>
+        <span id="alertMsg">Servicios Tier 1 caídos — plan de recuperación en ejecución.</span>
+      </div>
+
+      <!-- ===== RESUMEN ===== -->
+      <section class="view on" id="v-resumen">
+        <div class="heroband" id="heroBand"></div>
+        <div class="grid c4" id="heroTiles"></div>
+        <div class="grid c2-wide" style="margin-top:16px">
+          <div class="card">
+            <h2>Disponibilidad · últimas 24 h <span class="m">— meta mín. 99.9 %</span></h2>
+            <div class="chart" id="availChart"></div>
+          </div>
+          <div class="card">
+            <h2>Estado del sistema</h2>
+            <div class="health" style="margin-bottom:16px">
+              <div class="ring" id="healthRing"><div class="in"><b id="healthPct">—</b><span>disponible</span></div></div>
+              <div>
+                <div class="pill p-good" id="healthPill" style="margin-bottom:8px">{ic_ok} Operativo</div>
+                <div class="hint" id="healthTxt">7 servicios monitoreados · sin incidentes activos</div>
+              </div>
+            </div>
+            <div class="donut-wrap">
+              <div id="svcDonut"></div>
+              <div class="donut-legend" id="donutLegend"></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid c2" style="margin-top:16px">
+          <div class="card">
+            <h2>Riesgos prioritarios</h2>
+            <div id="riskMini"></div>
+          </div>
+          <div class="card">
+            <h2>Actividad reciente <span class="m">— bitácora</span></h2>
+            <div class="log" id="logMini"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CONTINUIDAD ===== -->
+      <section class="view" id="v-continuidad">
+        <div class="grid c2">
+          <div class="card">
+            <h2>Servicios críticos <span class="m">— en vivo</span></h2>
+            <div id="svcList"></div>
+            <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center">
+              <button class="btn btn-danger" id="simBtn">⚡ Simular incidente R1</button>
+              <button class="btn" id="resetBtn">↺ Restablecer</button>
+            </div>
+            <div class="hint" id="simHint" style="margin-top:10px">Ejecuta el escenario R1: caída de servicios Tier 1 y activación del DRP.</div>
+          </div>
+          <div class="card">
+            <h2>Plan de recuperación (DRP) <span class="m">— R1: caída prolongada de canales</span></h2>
+            <div class="drp off" id="drpBox">
+              <div class="drp-head">
+                <div><div class="drp-clock tnum" id="drpClock">00:00</div>
+                  <div style="color:var(--ink-2);font-size:12px">min desde la falla · <span id="drpState">en espera</span></div></div>
+                <div style="text-align:right;font-size:12px;color:var(--ink-2)">RPO datos <b style="color:var(--ink)">máx. 5 min</b><br>Margen vs SBS <b style="color:var(--good)" id="margin">60 min</b></div>
+              </div>
+              <div class="track">
+                <div class="mk" style="left:0%">0</div><div class="mk meta" style="left:66.6%">120 · meta</div><div class="mk lim" style="left:100%">180 · SBS</div>
+                <div class="fill" id="drpFill"></div>
+              </div>
+              <div class="phases" id="phases"></div>
+            </div>
+          </div>
+        </div>
+        <div id="postmortem" style="margin-top:16px;display:none"></div>
+      </section>
+
+      <!-- ===== RECUPERACION ===== -->
+      <section class="view" id="v-recuperacion">
+        <div class="grid c2">
+          <div class="card">
+            <h2>Objetivos de recuperación por dominio <span class="m">— RTO = tiempo en reactivar · RPO = datos que se podrían perder · sección 8.1</span></h2>
+            <table id="rtoTable"></table>
+          </div>
+          <div class="card">
+            <h2>Pasos del DRP — R1 <span class="m">— sección 8.2</span></h2>
+            <table id="drpTable"></table>
+          </div>
+        </div>
+        <div class="sec">Mitigación y contingencia por riesgo <span class="tag">sección 7</span></div>
+        <div class="grid c3" id="mit"></div>
+        <div class="sec">Madurez de continuidad (BCMM) <span class="tag">Modelo de Madurez · Unidad 2</span></div>
+        <div class="card">
+          <h2>Nivel de madurez del programa de continuidad <span class="m">— dónde está Interbank y hacia dónde va</span></h2>
+          <div class="mat" id="bcmm"></div>
+          <div class="hint" id="bcmmTxt" style="margin-top:12px"></div>
+        </div>
+      </section>
+
+      <!-- ===== BSC ===== -->
+      <section class="view" id="v-bsc">
+        <div class="grid c3" id="bsc"></div>
+      </section>
+
+      <!-- ===== RIESGOS ===== -->
+      <section class="view" id="v-riesgos">
+        <div class="grid c2">
+          <div class="card">
+            <h2>Matriz de calor 5×5 <span class="m">— puntaje = probabilidad × promedio de impactos</span></h2>
+            <div style="display:flex;gap:10px;margin-bottom:14px">
+              <button class="btn" id="riskActual">Puntaje actual</button>
+              <button class="btn btn-ghost" id="riskResidual">Con controles (residual)</button>
+            </div>
+            <div style="display:flex;gap:8px">
+              <div class="axis-y" style="flex:0 0 14px;text-align:center">Probabilidad →</div>
+              <div style="flex:1"><div class="heat-area"><div class="heat" id="heat"></div><div id="rmarks"></div></div><div class="axis-x">Impacto promedio →</div></div>
+            </div>
+            <div class="legend">
+              <div class="it"><span class="sw b-bajo"></span>Bajo &lt; 5</div><div class="it"><span class="sw b-medio"></span>Medio 5–9.9</div>
+              <div class="it"><span class="sw b-alto"></span>Alto 10–14.9</div><div class="it"><span class="sw b-crit"></span>Crítico 15 o más</div>
+            </div>
+          </div>
+          <div class="card"><h2>Riesgos priorizados <span class="m">— actual → residual</span></h2><div id="riskList"></div></div>
+        </div>
+        <div class="sec">Posición competitiva <span class="tag">MPC · sección 9.3</span></div>
+        <div class="grid c2">
+          <div class="card">
+            <h2>Matriz de perfil competitivo <span class="m">— total ponderado (1 a 4)</span></h2>
+            <div class="mpc" id="mpc"></div>
+            <div class="hint" style="margin-top:4px">La línea verde marca el objetivo de Interbank (2.85): al subir la continuidad de 1 a 3 supera a BBVA (2.60).</div>
+          </div>
+          <div class="card">
+            <h2>Inversión vs costo de un evento</h2>
+            <div class="grid c2" style="gap:12px">
+              <div class="tile"><div class="k tnum" style="color:var(--s1)">S/ 2.67 M</div><div class="l">Inversión en 8 meses (avance 1 + 2)</div></div>
+              <div class="tile"><div class="k tnum" style="color:var(--critical)">S/ 23.2 M</div><div class="l">Costo estimado de un evento tipo R3</div></div>
+            </div>
+            <div class="kpi" style="margin-top:16px"><div class="row"><span>Relación costo-evento / inversión</span><span class="v"><b>8.7×</b></span></div><div class="bar"><i style="width:100%;background:var(--critical)"></i></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PROVEEDORES ===== -->
+      <section class="view" id="v-proveedores">
+        <div class="grid c4" id="provTiles" style="margin-bottom:16px"></div>
+        <div class="card">
+          <h2>Proveedores críticos con acceso a datos <span class="m">— OBJ-2 · tarea 5</span></h2>
+          <table id="provTable"></table>
+        </div>
+      </section>
+
+      <!-- ===== ESTRATEGIA (FODA) ===== -->
+      <section class="view" id="v-estrategia">
+        <div class="grid c4" id="ieTiles" style="margin-bottom:16px"></div>
+        <div class="card" style="margin-bottom:16px">
+          <h2>Análisis FODA <span class="m">— cada factor con su dato y fuente</span></h2>
+          <div class="foda" id="foda"></div>
+        </div>
+        <div class="card">
+          <h2>Estrategias priorizadas <span class="m">— impacto × viabilidad · pasan al plan las de prioridad alta (15 o más)</span></h2>
+          <table id="estrTable"></table>
+        </div>
+      </section>
+
+      <!-- ===== PLAN DE ACCIÓN ===== -->
+      <section class="view" id="v-plan">
+        <div class="grid c4" id="planTiles" style="margin-bottom:16px"></div>
+        <div class="card" style="margin-bottom:16px">
+          <h2>Presupuesto consolidado <span class="m">— S/ 2.67 M · avance 1 + avance 2</span></h2>
+          <div class="budget-bar" id="budgetBar"></div>
+          <div class="budget-leg" id="budgetLeg"></div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <h2>Cronograma <span class="m">— 17 tareas · nov-26 a jun-27 · color por objetivo</span></h2>
+          <div class="gantt" id="gantt"></div>
+          <div class="chips" id="ganttLegend" style="margin-top:12px"></div>
+        </div>
+        <div class="card">
+          <h2>Detalle de tareas <span class="m">— responsable, plazo y recursos</span></h2>
+          <table id="taskTable"></table>
+        </div>
+      </section>
+
+      <!-- ===== OUTSOURCING / TDR ===== -->
+      <section class="view" id="v-outsourcing">
+        <div class="card" style="margin-bottom:16px">
+          <h2>Decisión de tercerización <span class="m">— qué servicios de TI tercerizar y bajo qué modalidad (Unidad 4)</span></h2>
+          <table id="outTable"></table>
+        </div>
+        <div class="grid c2">
+          <div class="card">
+            <h2>Matriz de evaluación de proveedores <span class="m">— caso: SOC + anti-DDoS · ponderación 40/30/30</span></h2>
+            <table id="evalTable"></table>
+            <div class="hint" style="margin-top:10px" id="evalPick"></div>
+          </div>
+          <div class="card tdr">
+            <h2>Términos de Referencia (TDR) <span class="m">— servicio SOC 24/7 y anti-DDoS</span></h2>
+            <dl id="tdr"></dl>
+          </div>
+        </div>
+        <div class="sec">Niveles de servicio (SLA) y fases <span class="tag">Semana 14</span></div>
+        <div class="grid c2">
+          <div class="card"><h2>SLA y métricas de seguimiento</h2><table id="slaTable"></table></div>
+          <div class="card"><h2>Fases del proceso de tercerización</h2><div id="fases"></div></div>
+        </div>
+        <div class="sec">Modelos de aprovisionamiento <span class="tag">Semanas 7-8</span></div>
+        <div class="card" style="margin-bottom:16px">
+          <h2>Insourcing · Outsourcing · Crowdsourcing <span class="m">— cuándo conviene cada uno en Interbank</span></h2>
+          <table id="sourcingTable"></table>
+        </div>
+        <div class="card">
+          <h2>Expediente de convocatoria y contratación <span class="m">— del TDR al contrato · Semana 10</span></h2>
+          <div id="expediente"></div>
+        </div>
+      </section>
+
+      <!-- ===== ARQUITECTURAS ===== -->
+      <section class="view" id="v-arquitectura">
+        <div class="card" style="margin-bottom:16px">
+          <h2>Arquitectura empresarial de TI <span class="m">— las 4 capas aplicadas a Interbank · Unidad 1</span></h2>
+          <div id="archStack"></div>
+        </div>
+        <div class="card">
+          <h2>Esquema de adquisición tecnológica <span class="m">— cómo se incorpora cada componente</span></h2>
+          <table id="archTable"></table>
+        </div>
+      </section>
+
+      <!-- ===== GOBIERNO DE TIC ===== -->
+      <section class="view" id="v-gobierno">
+        <div class="grid c4" id="govTiles" style="margin-bottom:16px"></div>
+        <div class="grid c2" style="margin-bottom:16px">
+          <div class="card">
+            <h2>Órganos de gobierno de TI <span class="m">— estructura en Interbank</span></h2>
+            <div class="org" id="govOrg"></div>
+          </div>
+          <div class="card">
+            <h2>El CIO <span class="m">— funciones, responsabilidades y perfil</span></h2>
+            <div id="cio"></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <h2>ISO 38500 <span class="m">— modelo Evaluar · Dirigir · Monitorear y sus 6 principios</span></h2>
+          <div class="edm" id="edm" style="margin-bottom:14px"></div>
+          <div class="princ" id="iso38500"></div>
+        </div>
+        <div class="card">
+          <h2>COBIT <span class="m">— 5 principios y separación gobierno / gestión</span></h2>
+          <div class="princ" id="cobit" style="margin-bottom:16px"></div>
+          <h2 style="margin-top:4px">Dominios de COBIT</h2>
+          <table id="cobitDom"></table>
+        </div>
+        <div class="grid c2" style="margin-top:16px">
+          <div class="card">
+            <h2>Tipos de organización y su gobierno <span class="m">— cómo se gestiona la TI según el tamaño</span></h2>
+            <table id="orgTypes"></table>
+          </div>
+          <div class="card">
+            <h2>Cómo se implementa COBIT <span class="m">— ciclo de 7 fases aplicado a Interbank</span></h2>
+            <div class="princ" id="cobitImpl"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BITACORA ===== -->
+      <section class="view" id="v-bitacora">
+        <div class="card"><h2>Bitácora de eventos <span class="m">— registro en vivo</span></h2><div class="log" id="logFull"></div></div>
+      </section>
+
+      <div class="hint" style="margin-top:26px;line-height:1.7">
+        <b style="color:var(--ink)">Plan Estratégico de las TIC: Interbank — Avances 1 y 2.</b> Curso: Planeamiento Estratégico de las TICs · Sección 20750 · Docente: Gustavo Henry Pachas Quispe · Ciclo 9 · Integrante: Rodrigo Andree Coronel Carcasi (U22208740).<br>
+        Metas, matriz de riesgos, RTO/RPO, presupuesto y MPC según el plan (IFS 2026; Ramos 2026; Perú Retail; INEI 2026; Res. SBS 0814-2025; ISO 31000/27005/22301). Indicadores de operación sobre la línea base del plan; la integración con telemetría en tiempo real se habilita en el despliegue (BIA del mes 1).
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+"use strict";
+/* ===== iconos nav ===== */
+const sv=(p)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const ICONS={
+  IC_home:sv('<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'),
+  IC_pulse:sv('<path d="M3 12h4l2 6 4-14 2 8h6"/>'),
+  IC_shield:sv('<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/>'),
+  IC_grid:sv('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'),
+  IC_alert:sv('<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>'),
+  IC_box:sv('<path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/>'),
+  IC_list:sv('<path d="M8 6h13M8 12h13M8 18h13M3 6h.5M3 12h.5M3 18h.5"/>'),
+  IC_target:sv('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>'),
+  IC_cal:sv('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>'),
+  IC_layers:sv('<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>'),
+  IC_gov:sv('<path d="M3 21h18M5 21V10M19 21V10M4 10l8-6 8 6M9 21v-6h6v6"/>'),
+  IC_arch:sv('<rect x="3" y="3" width="18" height="5" rx="1"/><rect x="3" y="10" width="18" height="5" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/>'),
+};
+document.querySelectorAll('#nav a').forEach(a=>{a.innerHTML=a.innerHTML.replace(/\{(IC_\w+)\}/,(_,k)=>ICONS[k]);});
+const STAT={ok:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>',
+  warn:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 4v5M8 11.5v.5"/></svg>',
+  crit:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg>'};
+document.body.innerHTML=document.body.innerHTML.replace('{ic_ok}',STAT.ok);
+
+/* ===== tema, reloj, print ===== */
+const root=document.documentElement, themeBtn=document.getElementById('themeBtn');
+themeBtn.onclick=()=>{const l=root.getAttribute('data-theme')==='light';root.setAttribute('data-theme',l?'dark':'light');themeBtn.textContent=l?'☀︎':'🌙';};
+document.getElementById('printBtn').onclick=()=>window.print();
+function clock(){document.getElementById('now').textContent=new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+clock();setInterval(clock,1000);
+
+/* ===== tooltip ===== */
+const tip=document.getElementById('tip');
+function showTip(e,h){tip.innerHTML=h;tip.style.opacity='1';let x=e.clientX+14,y=e.clientY+14;if(x+250>innerWidth)x=e.clientX-14-tip.offsetWidth;tip.style.left=x+'px';tip.style.top=y+'px';}
+function hideTip(){tip.style.opacity='0';}
+
+/* ===== splash ===== */
+function hideSplash(){const s=document.getElementById('splash');if(s){s.classList.add('hide');setTimeout(()=>{s.style.display='none';},600);}}
+if(document.readyState==='complete')setTimeout(hideSplash,1150);
+else addEventListener('load',()=>setTimeout(hideSplash,1150));
+
+/* ===== helpers de gráficos ===== */
+function sparkline(data,color){
+  const W=100,H=26,mn=Math.min(...data),mx=Math.max(...data),r=(mx-mn)||1;
+  const pts=data.map((v,i)=>[i/(data.length-1)*W, H-2-((v-mn)/r)*(H-5)]);
+  const line='M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L');
+  const area='M0,'+H+' L'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')+' L'+W+','+H+' Z';
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path d="${area}" fill="${color}" opacity="0.15"/><path d="${line}" fill="none" stroke="${color}" stroke-width="1.8" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function donut(segs){
+  const size=120,sw=17,r=(size-sw)/2,c=size/2,circ=2*Math.PI*r;
+  const total=segs.reduce((a,s)=>a+s.value,0)||1;let off=0,arcs='';
+  segs.forEach(s=>{if(s.value<=0)return;const len=s.value/total*circ;
+    arcs+=`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${sw}" stroke-dasharray="${(len-3).toFixed(1)} ${(circ-len+3).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90 ${c} ${c})" stroke-linecap="round"/>`;off+=len;});
+  return `<svg viewBox="0 0 ${size} ${size}" style="width:118px;height:118px;flex:none"><circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="var(--surface-3)" stroke-width="${sw}"/>${arcs}<text x="${c}" y="${c-1}" text-anchor="middle" style="fill:var(--ink);font-size:22px;font-weight:650">${total}</text><text x="${c}" y="${c+15}" text-anchor="middle" style="fill:var(--ink-3);font-size:9px">servicios</text></svg>`;
+}
+let availHist=[];
+(function seedHist(){let v=99.84;for(let i=0;i<24;i++){v=Math.max(99.74,Math.min(99.93,v+(Math.random()-.5)*0.04));availHist.push(v);}})();
+function drawAvail(){
+  const el=document.getElementById('availChart');if(!el)return;
+  const data=availHist,W=640,H=196,pL=36,pR=12,pT=14,pB=24,n=data.length;
+  const mn=Math.min(...data),mx=Math.max(...data);
+  const y0=Math.min(mn,99.90)-0.03,y1=Math.max(mx,99.90)+0.02;
+  const sx=i=>pL+i/(n-1)*(W-pL-pR), sy=v=>pT+(1-(v-y0)/(y1-y0))*(H-pT-pB);
+  let grid='',ylab='';
+  for(let k=0;k<=4;k++){const v=y0+(y1-y0)*k/4,y=sy(v);grid+=`<line x1="${pL}" y1="${y.toFixed(1)}" x2="${W-pR}" y2="${y.toFixed(1)}" stroke="var(--grid)" stroke-width="1"/>`;ylab+=`<text x="${pL-6}" y="${(y+3).toFixed(1)}" text-anchor="end">${v.toFixed(2)}</text>`;}
+  const metaY=sy(99.90);
+  const line='M'+data.map((v,i)=>sx(i).toFixed(1)+','+sy(v).toFixed(1)).join(' L');
+  const area='M'+sx(0).toFixed(1)+','+(H-pB)+' L'+data.map((v,i)=>sx(i).toFixed(1)+','+sy(v).toFixed(1)).join(' L')+' L'+sx(n-1).toFixed(1)+','+(H-pB)+' Z';
+  const xlabs=[0,6,12,18,23].map(i=>`<text x="${sx(i).toFixed(1)}" y="${H-6}" text-anchor="middle">${i===23?'ahora':('-'+(23-i)+'h')}</text>`).join('');
+  const last=data[n-1];
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">
+    <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--s1)" stop-opacity="0.32"/><stop offset="1" stop-color="var(--s1)" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${ylab}
+    <line x1="${pL}" y1="${metaY.toFixed(1)}" x2="${W-pR}" y2="${metaY.toFixed(1)}" stroke="var(--good)" stroke-width="1.3" stroke-dasharray="5 4"/>
+    <text x="${W-pR}" y="${(metaY-5).toFixed(1)}" text-anchor="end" style="fill:var(--good)">meta 99.90 %</text>
+    <path d="${area}" fill="url(#ag)"/>
+    <path d="${line}" fill="none" stroke="var(--s1)" stroke-width="2.2" stroke-linejoin="round"/>
+    <circle cx="${sx(n-1).toFixed(1)}" cy="${sy(last).toFixed(1)}" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/>
+    ${xlabs}</svg>`;
+}
+function drawDonut(){
+  const el=document.getElementById('svcDonut');if(!el)return;
+  let op=0,dg=0,cd=0;services.forEach(s=>{if(down&&s.t==='Tier 1')cd++;else if(s.up<99.78)dg++;else op++;});
+  const segs=[{label:'Operativo',value:op,color:'var(--good)'},{label:'Degradado',value:dg,color:'var(--warning)'},{label:'Caído',value:cd,color:'var(--critical)'}];
+  el.innerHTML=donut(segs);
+  document.getElementById('donutLegend').innerHTML=segs.map(s=>`<div class="r"><span class="sw" style="background:${s.color}"></span>${s.label} <b>&nbsp;${s.value}</b></div>`).join('');
+}
+
+/* ===== navegación ===== */
+const titles={resumen:['Resumen general','Estado consolidado del plan de continuidad TIC'],
+  continuidad:['Continuidad operativa','7 servicios críticos · OBJ-1 · RTO máx. 2 h'],
+  recuperacion:['Recuperación ante desastres','RTO/RPO, DRP y mitigación · secciones 7 y 8'],
+  bsc:['Balanced Scorecard de TI','6 objetivos SMART · 19 KPI · OBJ-3'],
+  riesgos:['Gestión de riesgos','ISO 31000 / 27005 / 22301 · OBJ-6'],
+  proveedores:['Proveedores críticos','Terceros con acceso a datos · OBJ-2'],
+  estrategia:['Estrategia','FODA, IFE/EFE y las 12 estrategias priorizadas'],
+  arquitectura:['Arquitecturas de TI','Funcional, de sistemas, de datos e infraestructura · Unidad 1'],
+  plan:['Plan de acción','17 tareas · cronograma de 8 meses · nov-26 a jun-27'],
+  gobierno:['Gobierno de TIC','COBIT, ISO 38500, el CIO y órganos de gobierno · Unidad 3'],
+  outsourcing:['Outsourcing / Tercerización','Insourcing, outsourcing, crowdsourcing, TDR y expedientes · Unidad 1'],
+  bitacora:['Bitácora de eventos','Registro operativo en vivo']};
+function openView(v){
+  if(!titles[v])v='resumen';
+  document.querySelectorAll('#nav a').forEach(x=>x.classList.toggle('on',x.dataset.v===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+  document.getElementById('vTitle').textContent=titles[v][0];
+  document.getElementById('vSub').textContent=titles[v][1];
+  document.querySelector('.content').scrollTop=0;
+  if(location.hash!=='#'+v)history.replaceState(null,'','#'+v);
+}
+document.querySelectorAll('#nav a').forEach(a=>a.onclick=()=>openView(a.dataset.v));
+addEventListener('hashchange',()=>openView(location.hash.slice(1)));
+
+/* ===== datos base ===== */
+const services=[
+  {n:'App móvil',t:'Tier 1',up:99.86,lat:120},{n:'Banca por Internet',t:'Tier 1',up:99.84,lat:140},
+  {n:'Plin (pagos/transferencias)',t:'Tier 1',up:99.80,lat:95},{n:'Tarjetas',t:'Tier 1',up:99.88,lat:110},
+  {n:'Cajeros (ATM)',t:'Tier 2',up:99.75,lat:210},{n:'Agentes',t:'Tier 2',up:99.72,lat:260},
+  {n:'Atención remota',t:'Tier 2',up:99.79,lat:180},
+];
+let down=false;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function svcPill(s){if(down&&s.t==='Tier 1')return `<span class="pill p-crit">${STAT.crit} Caído</span>`;
+  if(s.up<99.78)return `<span class="pill p-warn">${STAT.warn} Degradado</span>`;return `<span class="pill p-good">${STAT.ok} Operativo</span>`;}
+function renderSvc(){
+  const el=document.getElementById('svcList');if(el)el.innerHTML=services.map(s=>{
+    const lat=(down&&s.t==='Tier 1')?'—':Math.round(s.lat)+' ms';
+    return `<div class="svc"><div class="nm"><b>${s.n}</b><span>Disponibilidad ${s.up.toFixed(2)}%</span></div><span class="tier">${s.t}</span><span class="mono">${lat}</span>${svcPill(s)}</div>`;}).join('');
+  const alive=services.filter(s=>!(down&&s.t==='Tier 1'));
+  const avg=alive.reduce((a,s)=>a+s.up,0)/alive.length;
+  const pct=down?0:avg; setHealth(pct);
+  document.getElementById('envdot').style.background=down?'var(--critical)':'var(--good)';
+  document.getElementById('envtxt').textContent=down?'Incidente activo':'Operación · en línea';
+  document.querySelector('.nav a[data-v="continuidad"]').classList.toggle('alert',down);
+  document.getElementById('alertStrip').classList.toggle('on',down);
+  drawDonut();renderHeroBand();
+}
+function setHealth(pct){
+  const r=document.getElementById('healthRing'),p=document.getElementById('healthPct'),
+    pill=document.getElementById('healthPill'),txt=document.getElementById('healthTxt');
+  if(!r)return;
+  r.style.setProperty('--p',down?8:Math.min(100,(pct-99)/1*100));
+  p.textContent=down?'—':pct.toFixed(2)+'%';
+  if(down){pill.className='pill p-crit';pill.innerHTML=STAT.crit+' Incidente R1';txt.textContent='Servicios Tier 1 caídos · DRP en ejecución';r.style.setProperty('--p',8);}
+  else{pill.className='pill p-good';pill.innerHTML=STAT.ok+' Operativo';txt.textContent='7 servicios monitoreados · sin incidentes activos';}
+}
+/* hero tiles */
+const tileIcon={disp:ICONS.IC_pulse,rto:ICONS.IC_shield,risk:ICONS.IC_alert,inv:ICONS.IC_box};
+function renderHero(){
+  const alive=services.filter(s=>!(down&&s.t==='Tier 1'));
+  const avg=down?0:alive.reduce((a,s)=>a+s.up,0)/alive.length;
+  const tiles=[
+    {ic:'disp',k:down?'— %':avg.toFixed(2)+' %',l:'Disponibilidad servicios críticos · meta mín. 99.9 %',src:'OBJ-1',d:down?'<span class="delta dn">incidente</span>':'<span class="delta up">▲ estable</span>',sp:availHist.slice(-14),spc:'var(--s1)'},
+    {ic:'rto',k:'2 horas',l:'Tiempo meta para reactivar los servicios clave tras una caída · el regulador (SBS) exige máximo 3 h',src:'OBJ-1',d:'<span class="delta up">1 h antes del límite</span>',sp:[135,129,126,122,120,117,112],spc:'var(--good)'},
+    {ic:'risk',k:'1 crítico',l:'Riesgos: R1 crítico · R2, R3 altos',src:'OBJ-6',d:'<span class="delta up">→ bajo 10 c/ controles</span>',sp:[17.3,16.1,14.4,12.2,10.1,8.3,6.4],spc:'var(--serious)'},
+    {ic:'inv',k:'S/ 2.67 M',l:'Inversión consolidada · 0.18 % utilidad 2025',src:'Sección 9.2',d:'<span class="delta up">ROI 8.7×</span>',sp:[0.2,0.5,0.9,1.3,1.8,2.674],spc:'var(--s7)'},
+  ];
+  document.getElementById('heroTiles').innerHTML=tiles.map(t=>`<div class="card tile">
+    <div class="top"><div class="ic">${tileIcon[t.ic]}</div>${t.d}</div>
+    <div class="k tnum">${t.k}</div><div class="l">${t.l}</div><div class="src">${t.src}</div>
+    <div class="spark">${sparkline(t.sp,t.spc)}</div></div>`).join('');
+}
+function renderHeroBand(){
+  const el=document.getElementById('heroBand');if(!el)return;
+  const alive=services.filter(s=>!(down&&s.t==='Tier 1'));
+  const avg=down?0:alive.reduce((a,s)=>a+s.up,0)/alive.length;
+  const bc=down?'var(--critical)':'var(--good)';
+  const title=down?'Incidente activo':'Operación estable';
+  const sub=down?'Servicios Tier 1 caídos — el plan de recuperación está en ejecución.':'Los 7 servicios críticos están disponibles. Sin incidentes activos.';
+  el.innerHTML=`<div class="state"><span class="beacon" style="background:${bc};box-shadow:0 0 0 0 ${bc}"></span>
+      <div><h1>${title}</h1><div class="st-sub">${sub}</div></div></div>
+    <div class="figs">
+      <div class="fig"><div class="v" style="color:${bc}">${down?'—':avg.toFixed(2)+'%'}</div><div class="l">Disponibilidad general</div></div>
+      <div class="fig"><div class="v">60 min</div><div class="l">Margen bajo el límite de la SBS</div></div>
+      <div class="fig"><div class="v">R1</div><div class="l">Riesgo máximo · baja a 6 con controles</div></div>
+    </div>`;
+}
+
+/* ===== DRP ===== */
+const phases=[{a:0,b:15,t:'0–15 min',d:'Detectar y declarar crisis'},{a:15,b:30,t:'15–30 min',d:'Informar a clientes y decidir'},
+  {a:30,b:90,t:'30–90 min',d:'Conmutar al sitio alterno'},{a:90,b:120,t:'90–120 min',d:'Probar y reabrir Tier 1'}];
+function renderPhases(min){const el=document.getElementById('phases');if(!el)return;
+  el.innerHTML=phases.map(p=>{let c='';if(min>=p.b)c='done';else if(min>=p.a)c='active';return `<div class="ph ${c}"><div class="t">${p.t}</div>${p.d}</div>`;}).join('');}
+renderPhases(-1);
+let timer=null,simMin=0;const LIMIT=180,META=120,loggedPh=new Set();
+function setDRP(min){
+  const box=document.getElementById('drpBox');box.classList.toggle('off',min<0&&!down);
+  const mm=Math.max(0,min);
+  document.getElementById('drpClock').textContent=String(Math.floor(mm)).padStart(2,'0')+':'+String(Math.round((mm%1)*60)).padStart(2,'0');
+  const fill=document.getElementById('drpFill');fill.style.width=Math.min(100,mm/LIMIT*100)+'%';fill.style.background=mm<=META?'var(--s1)':'var(--warning)';
+  let st='en espera';if(down){const ph=phases.find(p=>mm>=p.a&&mm<p.b);st=mm>=120?'Tier 1 restablecido ✓':(ph?ph.d:'en curso');}
+  document.getElementById('drpState').textContent=st;
+  const marg=Math.round(LIMIT-mm),m=document.getElementById('margin');m.textContent=marg+' min';m.style.color=marg>=0?'var(--good)':'var(--critical)';
+  renderPhases(down?mm:-1);
+}
+function startSim(){
+  if(down)return;down=true;simMin=0;loggedPh.clear();
+  document.getElementById('postmortem').style.display='none';
+  renderSvc();renderHero();setDRP(0);
+  log('crit','Incidente R1 declarado: caída de servicios Tier 1 (app, banca, Plin, tarjetas).');
+  document.getElementById('simHint').textContent='Incidente en curso… el DRP avanza en tiempo acelerado (1 s = 4 min).';
+  clearInterval(timer);
+  timer=setInterval(()=>{
+    simMin+=1;setDRP(simMin);
+    phases.forEach((p,i)=>{if(simMin>=p.b&&!loggedPh.has(i)){loggedPh.add(i);log('info','DRP · '+p.d+' completado ('+p.t+').');}});
+    if(simMin>=120){down=false;clearInterval(timer);renderSvc();renderHero();
+      document.getElementById('simHint').innerHTML='<b style="color:var(--good)">Tier 1 restablecido en 120 min — 60 min bajo el límite de la SBS.</b>';
+      document.getElementById('drpState').textContent='Tier 1 restablecido ✓';
+      log('ok','Servicios Tier 1 restablecidos en 120 min. Margen de 60 min vs límite SBS. RPO respetado (máx. 5 min).');
+      showPostmortem();
+    }
+  },250);
+}
+function showPostmortem(){
+  const el=document.getElementById('postmortem');el.style.display='block';
+  el.innerHTML=`<div class="card"><h2>Informe post-incidente <span class="m">— R1</span></h2>
+    <div class="grid c4" style="gap:12px">
+      ${[['120 min','Tiempo de recuperación (RTO)'],['60 min','Margen bajo el límite SBS'],['máx. 5 min','Datos expuestos (RPO)'],['4 de 4','Fases del DRP completadas']]
+        .map(x=>`<div class="tile"><div class="k tnum" style="color:var(--good)">${x[0]}</div><div class="l">${x[1]}</div></div>`).join('')}
+    </div>
+    <div class="hint" style="margin-top:12px">Resultado conforme al OBJ-1: RTO máx. 2 h en Tier 1. Se cumplió la secuencia detección → aviso → conmutación → reapertura sin superar el umbral regulatorio de 3 h.</div></div>`;
+}
+document.addEventListener('click',e=>{if(e.target.id==='simBtn')startSim();
+  if(e.target.id==='resetBtn'){clearInterval(timer);down=false;simMin=0;renderSvc();renderHero();setDRP(-1);
+    document.getElementById('drpBox').classList.add('off');document.getElementById('postmortem').style.display='none';
+    document.getElementById('simHint').textContent='Ejecuta el escenario R1: caída de servicios Tier 1 y activación del DRP.';log('info','Sistema restablecido a estado operativo normal.');}});
+
+/* ===== BSC ===== */
+function bc(st){return st==='good'?'var(--good)':st==='warn'?'var(--warning)':'var(--critical)';}
+const bsc=[
+ {p:'Financiera',o:'OBJ-5',k:[{n:'Desviación presupuestal',v:'3.2 %',m:'máx. 5 %',pct:64,s:'good'},{n:'Ratio de eficiencia',v:'41.1 %',m:'máx. 42 %',pct:98,s:'good'},{n:'Ejecución del presupuesto',v:'S/ 0.42 M',m:'S/ 2.67 M',pct:16,s:'good'}]},
+ {p:'Clientes',o:'OBJ-4',k:[{n:'NPS retail',v:'52',m:'54 (base 51)',pct:33,s:'warn'},{n:'Consultas resueltas sin agente',v:'24 %',m:'mín. 30 %',pct:80,s:'warn'}]},
+ {p:'Procesos',o:'OBJ-1 / 2',k:[{n:'Disponibilidad servicios críticos',v:'99.82 %',m:'mín. 99.9 %',pct:91,s:'warn'},{n:'RTO Tier 1 (última prueba)',v:'1 h 52',m:'máx. 2 h',pct:93,s:'good'},{n:'RTO Tier 2 (última prueba)',v:'3 h 40',m:'máx. 4 h',pct:92,s:'good'},{n:'Proveedores evaluados',v:'78 %',m:'100 %',pct:78,s:'warn'},{n:'Brechas altas cerradas',v:'85 %',m:'mín. 90 %',pct:94,s:'warn'},{n:'Aviso de incidentes (simulacro)',v:'36 h',m:'máx. 48 h',pct:100,s:'good'}]},
+ {p:'Aprendizaje',o:'OBJ-3',k:[{n:'Personal capacitado',v:'68 %',m:'mín. 90 %',pct:76,s:'warn'},{n:'Reportes BSC al comité',v:'1 de 2',m:'trimestral',pct:50,s:'warn'},{n:'KPI activos en el tablero',v:'19 de 19',m:'19',pct:100,s:'good'}]},
+ {p:'Riesgos',o:'OBJ-6 · 9 KPI',k:[{n:'Cambios con reversa aprobada (R1)',v:'100 %',m:'100 %',pct:100,s:'good'},{n:'Pruebas de conmutación · RTO máx. 2 h (R1)',v:'1 de 2',m:'2/año',pct:50,s:'warn'},{n:'Incidentes de pagos > 3 h (R1)',v:'0',m:'0',pct:100,s:'good'},{n:'Servicios con 2 enlaces BGP (R2)',v:'100 %',m:'100 %',pct:100,s:'good'},{n:'Mitigación DDoS · tráfico mín. 99.9 % (R2)',v:'8 min',m:'máx. 10 min',pct:100,s:'good'},{n:'Simulacros DDoS (R2)',v:'1 de 2',m:'2/año',pct:50,s:'warn'},{n:'MFA cuentas privilegiadas y terceros (R3)',v:'92 %',m:'100 %',pct:92,s:'warn'},{n:'Servidores críticos con EDR (R3)',v:'88 %',m:'100 %',pct:88,s:'warn'},{n:'Restauraciones mín. 95 % · RPO máx. 1 h (R3)',v:'96 %',m:'mín. 95 %',pct:100,s:'good'}]},
+];
+document.getElementById('bsc').innerHTML=bsc.map(p=>`<div class="card"><div class="persp">${p.p}<span class="o">${p.o}</span><span class="ln"></span></div>
+  ${p.k.map(k=>`<div class="kpi"><div class="row"><span>${k.n}</span><span class="v"><b>${k.v}</b> / ${k.m}</span></div><div class="bar"><i style="width:${k.pct}%;background:${bc(k.s)}"></i></div></div>`).join('')}</div>`).join('');
+
+/* ===== heatmap + riesgos ===== */
+const heat=document.getElementById('heat');
+function band(s){return s>=15?'b-crit':s>=10?'b-alto':s>=5?'b-medio':'b-bajo';}
+let hh='';for(let p=5;p>=1;p--){hh+=`<div class="lbl">${p}</div>`;for(let i=1;i<=5;i++){const sc=p*i;hh+=`<div class="cell ${band(sc)}">${sc}</div>`;}}
+hh+=`<div class="lbl"></div>`+[1,2,3,4,5].map(i=>`<div class="lbl">${i}</div>`).join('');heat.innerHTML=hh;
+const risks=[
+ {c:'R1',n:'Caída prolongada de canales',p:4,i:4.33,sc:17.3,lvl:'Crítico',rp:2,ri:3.0,rsc:6.0,col:'var(--critical)',det:'core, centro de datos o cambio fallido'},
+ {c:'R2',n:'Red o proveedor crítico (DDoS)',p:4,i:3.33,sc:13.3,lvl:'Alto',rp:2,ri:2.35,rsc:4.7,col:'var(--serious)',det:'falla de ISP o procesador, ataque DDoS'},
+ {c:'R3',n:'Extorsión y filtración de datos',p:3,i:4.33,sc:13.0,lvl:'Alto',rp:2,ri:3.35,rsc:6.7,col:'var(--s7)',det:'ransomware o ataque vía tercero'},
+ {c:'R4',n:'Sismo en el sitio principal',p:2,i:4.0,sc:8.0,lvl:'Medio',rp:2,ri:4.0,rsc:8.0,col:'var(--s4)',det:'no entra al plan (puntaje < 10)'},
+];
+let mode='actual';
+function placeMarks(){const area=document.getElementById('rmarks');
+  area.innerHTML=risks.map(r=>{const p=mode==='actual'?r.p:r.rp,i=mode==='actual'?r.i:r.ri;
+    const left=((i-0.5)/5)*100,top=((5-p+0.5)/5)*100;
+    return `<div class="rmark" data-c="${r.c}" style="left:${left}%;top:${top}%;background:${r.col}">${r.c}</div>`;}).join('');
+  area.querySelectorAll('.rmark').forEach(el=>{const r=risks.find(x=>x.c===el.dataset.c);
+    el.onmousemove=e=>showTip(e,`<b>${r.c} · ${r.n}</b><br>Actual: ${r.sc} (${r.lvl})<br>Residual: ${r.rsc}`);el.onmouseleave=hideTip;});}
+placeMarks();
+document.getElementById('riskActual').onclick=function(){mode='actual';this.classList.remove('btn-ghost');document.getElementById('riskResidual').classList.add('btn-ghost');placeMarks();};
+document.getElementById('riskResidual').onclick=function(){mode='residual';this.classList.remove('btn-ghost');document.getElementById('riskActual').classList.add('btn-ghost');placeMarks();};
+function riskRows(mini){return risks.map(r=>{const pct=Math.round(r.sc/25*100),rpct=Math.round(r.rsc/25*100);
+  return `<div class="kpi"><div class="row"><span><b style="color:${r.col}">${r.c}</b> ${r.n}</span><span class="v"><b>${r.sc}</b> → ${r.rsc}</span></div>
+    <div class="bar"><i style="width:${pct}%;background:${r.col};opacity:.5"></i><i style="position:absolute;width:${rpct}%;background:${r.col}"></i></div>
+    ${mini?'':`<div style="font-size:11px;color:var(--ink-2);margin-top:3px">${r.lvl} · ${r.det}</div>`}</div>`;}).join('');}
+document.getElementById('riskList').innerHTML=riskRows(false);
+document.getElementById('riskMini').innerHTML=riskRows(true);
+
+/* ===== mitigación ===== */
+const mit=[
+ {c:'R1',col:'var(--critical)',title:'Caída de canales',m:[['100 %','cambios con reversa'],['2/año','pruebas de conmutación'],['0','caídas de pagos > 3 h']],gat:'2 servicios críticos caídos > 15 min o pagos > 30 min',alt:'sitio alterno y canales de respaldo (311 9000, WhatsApp)',resp:'Comité de crisis y Gerente de continuidad'},
+ {c:'R2',col:'var(--serious)',title:'Red o proveedor',m:[['100 %','servicios con 2 enlaces'],['10 min','máx. mitigar DDoS'],['2/año','simulacros DDoS']],gat:'pérdida de paquetes > 20 % por 5 min',alt:'ISP secundario por BGP y scrubbing',resp:'Arquitecto de redes y NOC'},
+ {c:'R3',col:'var(--s7)',title:'Extorsión y filtración',m:[['100 %','cuentas con MFA'],['100 %','servidores con EDR'],['mín. 95 %','restauraciones OK']],gat:'alerta de cifrado masivo o exfiltración',alt:'aislar y restaurar en entorno limpio; aviso en máx. 48 h',resp:'CISO, CSIRT, Legal y Comunicaciones'},
+];
+document.getElementById('mit').innerHTML=mit.map(x=>`<div class="card mit"><div class="hd"><span class="pill" style="background:color-mix(in srgb,${x.col} 20%,transparent);color:${x.col}">${x.c}</span><span class="c">${x.title}</span></div>
+  <div class="metrics">${x.m.map(m=>`<div class="m"><div class="mv">${m[0]}</div><div class="ml">${m[1]}</div></div>`).join('')}</div>
+  <div class="det"><b>Gatillo:</b> ${x.gat}</div><div class="det"><b>Alternativa:</b> ${x.alt}</div><div class="det"><b>Responsable:</b> ${x.resp}</div></div>`).join('');
+
+/* ===== RTO/RPO + DRP tables ===== */
+document.getElementById('rtoTable').innerHTML=`<tr><th>Dominio</th><th>RTO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-3)">· reactivar</span></th><th>RPO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-3)">· datos en riesgo</span></th><th>Cómo se obtuvo</th></tr>`+[
+  ['Sistemas Tier 1','máx. 2 h','máx. 5 min','Suma de pasos del DRP (120 min) < 180 min SBS'],
+  ['Sistemas Tier 2','máx. 4 h','máx. 5 min','MTPD 5 h − 60 min de margen'],
+  ['Comunicaciones','máx. 15 min','—','Tramo 0–15 min del DRP de R2'],
+  ['Infraestructura','máx. 60 min','—','Ventana de conmutación al sitio alterno'],
+  ['Datos (R3)','máx. 4 h','máx. 1 h','Copias inmutables cada hora; entorno limpio'],
+].map(r=>`<tr><td><b>${r[0]}</b></td><td class="tnum">${r[1]}</td><td class="tnum">${r[2]}</td><td class="sub">${r[3]}</td></tr>`).join('');
+document.getElementById('drpTable').innerHTML=`<tr><th>Ventana</th><th>Acción</th><th>Responsable</th></tr>`+[
+  ['0–15 min','Detectar y declarar crisis','NOC / Comité de crisis'],
+  ['15–30 min','Informar a clientes y decidir conmutación','Gerente de continuidad'],
+  ['30–90 min','Conmutar al sitio alterno','Arquitecto de infraestructura'],
+  ['90–120 min','Probar y reabrir servicios Tier 1','Equipo de infraestructura'],
+].map(r=>`<tr><td class="tnum">${r[0]}</td><td><b>${r[1]}</b></td><td class="sub">${r[2]}</td></tr>`).join('');
+
+/* ===== proveedores ===== */
+document.getElementById('provTiles').innerHTML=[
+  {k:'78 %',l:'Proveedores evaluados · meta 100 %'},{k:'6',l:'Proveedores críticos con acceso a datos'},
+  {k:'máx. 48 h',l:'Aviso de incidentes de terceros'},{k:'1',l:'Filtración vía tercero (oct-2024)'},
+].map(t=>`<div class="card tile"><div class="k tnum">${t.k}</div><div class="l">${t.l}</div></div>`).join('');
+const provs=[
+  ['Proveedor de core bancario','Crítico','Sí','Evaluado','good'],
+  ['Procesador de pagos (Plin)','Crítico','Sí','Evaluado','good'],
+  ['ISP primario','Alto','No','Evaluado','good'],
+  ['ISP secundario (BGP)','Alto','No','En proceso','warn'],
+  ['Nube / hosting','Crítico','Sí','En proceso','warn'],
+  ['SOC tercerizado','Alto','Sí','Pendiente','crit'],
+];
+document.getElementById('provTable').innerHTML=`<tr><th>Proveedor</th><th>Criticidad</th><th>Acceso a datos</th><th>Estado evaluación</th></tr>`+
+  provs.map(p=>{const pc=p[4]==='good'?'p-good':p[4]==='warn'?'p-warn':'p-crit';const ic=p[4]==='good'?STAT.ok:p[4]==='warn'?STAT.warn:STAT.crit;
+  return `<tr><td><b>${p[0]}</b></td><td>${p[1]}</td><td>${p[2]}</td><td><span class="pill ${pc}">${ic} ${p[3]}</span></td></tr>`;}).join('');
+
+/* ===== MPC ===== */
+const mpc=[{n:'BCP',sc:3.30,col:'var(--s3)'},{n:'BBVA Perú',sc:2.60,col:'var(--s2)'},{n:'Interbank',sc:2.35,col:'var(--s1)'}];
+document.getElementById('mpc').innerHTML=mpc.map(m=>`<div class="row"><span class="nm">${m.n}</span>
+  <div class="b"><i style="width:${m.sc/4*100}%;background:${m.col}"></i><div class="goalline" style="left:${2.85/4*100}%"></div></div>
+  <span class="sc">${m.sc.toFixed(2)}</span></div>`).join('');
+
+/* ===== ESTRATEGIA (FODA) ===== */
+document.getElementById('ieTiles').innerHTML=[
+  {k:'2.46',l:'Matriz IFE (interna) · rango medio'},{k:'2.57',l:'Matriz EFE (externa) · rango medio'},
+  {k:'Cuadrante V',l:'Matriz IE: retener y mantener, corrigiendo lo débil'},{k:'2.35 → 2.85',l:'MPC: objetivo al subir continuidad de 1 a 3'},
+].map(t=>`<div class="card tile"><div class="k tnum">${t.k}</div><div class="l">${t.l}</div></div>`).join('');
+const foda={
+ F:['<b>F1.</b> Rentabilidad sólida: ROE 15.5 %, CET1 12.5 %','<b>F2.</b> Alta adopción digital: 84 % retail, 68 % ventas','<b>F3.</b> Ecosistema propio: Plin 206 M tx (+48 %), Izipay','<b>F4.</b> Cartera sana: mora 2.3 %, 19.2 % en consumo','<b>F5.</b> Gobierno de seguridad y datos: acuerdo con Anthropic'],
+ D:['<b>D1.</b> Caídas de canales en oct-2024 y jul-2026','<b>D2.</b> Filtración de datos por un tercero (oct-2024)','<b>D3.</b> NPS retail bajó de 55 a 51','<b>D4.</b> Cuota de préstamos 13.8 %; gastos +18.3 %','<b>D5.</b> Identidad difusa: sin misión ni valores publicados'],
+ O:['<b>O1.</b> Conectividad: 82 % usa internet; 95.7 % con celular','<b>O2.</b> E-commerce: US$ 8,700 M en 1S25 (+18 %)','<b>O3.</b> Sector rentable: banca ganó S/ 14,147 M en 2025','<b>O4.</b> IA generativa para atención y analítica','<b>O5.</b> Clientes por captar: 6.6 M incluidos desde 2020'],
+ A:['<b>A1.</b> Ciberdelincuencia y riesgo de terceros (SBS–FMI)','<b>A2.</b> Más regulación: aviso 48 h, multas hasta 450 UIT','<b>A3.</b> Yape: 15.9 M usuarios y ya presta','<b>A4.</b> Inflación 4.5 %; El Niño −0.9 pts al PBI','<b>A5.</b> Costo de cambio bajo: +1 M transferencias/día'],
+};
+const fqMeta={F:['Fortalezas'],D:['Debilidades'],O:['Oportunidades'],A:['Amenazas']};
+document.getElementById('foda').innerHTML=['F','D','O','A'].map(q=>`<div class="fq ${q}"><h3><span class="b"></span>${fqMeta[q][0]}</h3><ul>${foda[q].map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
+const estr=[['FO1','Plin e Izipay para QR y e-commerce de pymes',4,3,12,'media'],['FO2','IA y analítica para ofertas y asistente',4,4,16,'alta'],['FO3','Apertura de cuenta 100 % digital',3,4,12,'media'],['FA1','Ciberseguridad y gestión de terceros',5,4,20,'alta'],['FA2','Gobierno de TI con tablero BSC',4,5,20,'alta'],['FA3','Alertas tempranas de mora',3,3,9,'baja'],['DO1','Recuperación ante desastres y monitoreo con IA',5,3,15,'alta'],['DO2','Atención con IA para recuperar el NPS',4,3,12,'media'],['DO3','Automatización para contener gastos',3,4,12,'media'],['DA1','Gestión de proveedores críticos',5,4,20,'alta'],['DA2','Plan de continuidad ISO 22301',5,4,20,'alta'],['DA3','Fidelización del cliente principal',3,3,9,'baja']];
+document.getElementById('estrTable').innerHTML=`<tr><th>Cód.</th><th>Estrategia</th><th>Imp.</th><th>Viab.</th><th>Puntaje</th><th>Prioridad</th></tr>`+
+  estr.map(e=>`<tr><td><b>${e[0]}</b></td><td>${e[1]}</td><td class="tnum">${e[2]}</td><td class="tnum">${e[3]}</td><td><span class="scorebar"><i style="width:${e[4]/25*100}%"></i></span> <b class="tnum">${e[4]}</b></td><td><span class="prio ${e[5]}">${e[5]}</span></td></tr>`).join('');
+
+/* ===== PLAN DE ACCIÓN ===== */
+document.getElementById('planTiles').innerHTML=[
+  {k:'17',l:'Tareas en el plan consolidado'},{k:'8 meses',l:'nov-26 a jun-27'},{k:'6',l:'Estrategias de prioridad alta'},{k:'S/ 2.67 M',l:'Presupuesto total (1.24 M + 1.43 M)'},
+].map(t=>`<div class="card tile"><div class="k tnum">${t.k}</div><div class="l">${t.l}</div></div>`).join('');
+const objColor={1:'var(--s1)',2:'var(--s3)',3:'var(--s4)',4:'var(--s5)',5:'var(--s7)',6:'var(--s2)'};
+const tasks=[
+ [1,'BIA e inventario de los 7 servicios críticos','Gerente de continuidad','1 especialista y 1 analista',1,1,1],
+ [2,'Arquitectura de recuperación y plan ISO 22301','Arquitecto de infraestructura','3 ingenieros y consultor',1,2,1],
+ [3,'Monitoreo con detección de anomalías por IA','Jefe de infraestructura','Herramienta y 1 analista',2,4,1],
+ [4,'Prueba de conmutación y simulacro de crisis','Gerente de continuidad','Ventana de pruebas',4,5,1],
+ [5,'Inventariar y evaluar proveedores críticos','CISO','2 analistas y consultoría',1,3,2],
+ [6,'Actualizar contratos: SLA, notificación, salida','Legal y Compras','Equipo legal y compras',3,4,2],
+ [7,'Protocolo de aviso en 48 horas','CISO y oficial de datos','Protocolo, legal, comms',2,4,2],
+ [8,'Tablero BSC y reportes trimestrales','Gerente de PMO de TI','1 analista de BI',2,6,3],
+ [9,'Capacitar en ISO 22301, COBIT e incidentes','PMO de TI y RR. HH.','Plan y certificaciones',2,5,3],
+ [10,'Piloto del asistente con IA · NPS','VP de Data, Analytics & AI','Licencias de IA y 1 analista',3,6,4],
+ [11,'Control de presupuesto y eficiencia','PMO de TI y Finanzas','Reporte mensual de gasto',1,6,5],
+ [12,'MFA y gestión de accesos privilegiados (PAM)','CISO','PAM y 1 analista',1,3,2],
+ [13,'EDR y segmentación en servidores críticos','CISO e Infraestructura','EDR y 2 ingenieros',2,5,2],
+ [14,'Copias inmutables y pruebas de restauración','Jefe de infraestructura','Almacenamiento inmutable',3,6,2],
+ [15,'Segundo ISP con BGP y anti-DDoS','Arquitecto de redes','2.º ISP y scrubbing',3,6,2],
+ [16,'Gestión de cambios con reversa y runbooks','Gerente de continuidad','Consultor y 1 analista',2,4,6],
+ [17,'Simulacros (recuperación, ransomware, DDoS)','Gerente de continuidad y CISO','Ventana de pruebas y consultoría',5,8,6],
+];
+const months=['Nov','Dic','Ene','Feb','Mar','Abr','May','Jun'];
+let g=`<div class="gtrow head"><div class="lab">Tarea</div><div class="ghead">${months.map(m=>`<div>${m}</div>`).join('')}</div></div>`;
+g+=tasks.map(t=>{
+  const left=(t[4]-1)/8*100, width=(t[5]-t[4]+1)/8*100;
+  return `<div class="gtrow"><div class="lab"><b>${t[0]}.</b> ${t[1]}</div>
+    <div class="gtrack"><div class="gbar" style="left:calc(${left}% + 3px);width:calc(${width}% - 6px);background:${objColor[t[6]]}"></div></div></div>`;
+}).join('');
+document.getElementById('gantt').innerHTML=g;
+document.getElementById('ganttLegend').innerHTML=Object.keys(objColor).map(o=>`<span class="ch"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${objColor[o]};margin-right:5px;vertical-align:middle"></span>OBJ-${o}</span>`).join('');
+document.getElementById('taskTable').innerHTML=`<tr><th>N.°</th><th>Tarea</th><th>Responsable</th><th>Plazo</th><th>Recursos</th><th>OBJ</th></tr>`+
+  tasks.map(t=>`<tr><td class="tnum">${t[0]}</td><td><b>${t[1]}</b></td><td class="sub">${t[2]}</td><td class="tnum">${months[t[4]-1]}–${months[t[5]-1]}</td><td class="sub">${t[3]}</td><td><span class="ch" style="border-color:${objColor[t[6]]}">OBJ-${t[6]}</span></td></tr>`).join('');
+
+/* ===== OUTSOURCING / TDR ===== */
+const outs=[
+ ['Core bancario','In-house','—','—','Activo crítico; no se terceriza por riesgo y cumplimiento'],
+ ['Monitoreo / SOC 24/7','Tercerizar','Off-house','Servicio gestionado + SLA','Especialización; apoya OBJ-2 y la tarea 17'],
+ ['Anti-DDoS (scrubbing) + WAF','Tercerizar','Off-house','Servicio en la nube','Tarea 15; mitigación máx. 10 min (R2)'],
+ ['EDR / pentesting','Tercerizar','Out-tasking','Por proyecto','Capacidad especializada; tareas 12-13 (R3)'],
+ ['Desarrollo del asistente IA','Co-sourcing','Co-sourcing','Time & Materials / squads','OBJ-4; equipo mixto con el banco'],
+ ['Segundo ISP (BGP)','Tercerizar','Off-house','Contrato con SLA','Tarea 15; enlace redundante (R2)'],
+ ['Arquitectura DRP','In-house + consultor','In-house','Consultoría puntual','Tarea 2; el banco mantiene el control'],
+];
+document.getElementById('outTable').innerHTML=`<tr><th>Servicio de TI</th><th>Decisión</th><th>Modalidad</th><th>Modelo de contratación</th><th>Justificación</th></tr>`+
+  outs.map(o=>{const pc=o[1].startsWith('Terceriz')?'p-info':o[1].startsWith('Co')?'p-warn':'p-good';
+  return `<tr><td><b>${o[0]}</b></td><td><span class="pill ${pc}">${o[1]}</span></td><td>${o[2]}</td><td class="sub">${o[3]}</td><td class="sub">${o[4]}</td></tr>`;}).join('');
+const evalP=[['Proveedor A','Tarifa baja, poca experiencia en QA',3,5,3],['Proveedor B','Alta experiencia, metodologías ágiles',5,4,4],['Proveedor C','Excelente perfil, excede presupuesto 20 %',5,2,4]];
+function wsum(t,e,f){return (0.4*t+0.3*e+0.3*f);}
+document.getElementById('evalTable').innerHTML=`<tr><th>Proveedor</th><th>Téc. 40%</th><th>Econ. 30%</th><th>Fit 30%</th><th>Total</th></tr>`+
+  evalP.map(p=>{const tot=wsum(p[2],p[3],p[4]);const win=tot===Math.max(...evalP.map(x=>wsum(x[2],x[3],x[4])));
+  return `<tr><td><b>${p[0]}</b><div class="sub">${p[1]}</div></td><td class="tnum">${p[2]}</td><td class="tnum">${p[3]}</td><td class="tnum">${p[4]}</td><td><b class="tnum" style="color:${win?'var(--good)':'var(--ink)'}">${tot.toFixed(2)}</b>${win?' ✓':''}</td></tr>`;}).join('');
+document.getElementById('evalPick').innerHTML='Se selecciona el <b>Proveedor B (4.40)</b>: alta experiencia en entornos financieros dentro del tope presupuestal. Ponderación 40 % técnica · 30 % económica · 30 % fit ágil.';
+const tdr=[
+ ['Objetivo','Monitoreo de seguridad 24/7 (SOC) y mitigación anti-DDoS para los 7 servicios críticos, con respuesta máx. 10 min.'],
+ ['Alcance','SIEM/EDR, scrubbing en la nube, WAF, guardia 24/7 y reporte de incidentes a la SBS en máx. 48 h. Excluye el desarrollo del core.'],
+ ['Entregables','SOC operativo, runbooks, tablero de incidentes, informe mensual de SLA y 2 simulacros DDoS al año.'],
+ ['Perfil del proveedor','Experiencia comprobada en banca, personal certificado, NDA por datos bancarios y estrategia de salida (Res. SBS 1515-2021).'],
+ ['Cronograma','Implementación en los meses 3-6 (tarea 15); go-live en el mes 6.'],
+ ['Contratación','Servicio gestionado con SLA, penalidades y cláusula de salida.'],
+];
+document.getElementById('tdr').innerHTML=tdr.map(x=>`<dt>${x[0]}</dt><dd>${x[1]}</dd>`).join('');
+const sla=[['Disponibilidad del servicio','mín. 99.9 %','Penalidad por hora incumplida'],['Tiempo de mitigación DDoS','máx. 10 min','Crédito en facturación'],['Tráfico legítimo atendido','mín. 99.9 %','Medición continua'],['Lead Time por incidente crítico','máx. 10 días','SLA estricto'],['Cobertura de pruebas (desarrollo)','mín. 85 %','Requisito de aceptación'],['Aviso de incidentes','máx. 48 h','DS 016-2024-JUS'],['NDA y manejo de datos','Obligatorio','Datos bancarios']];
+document.getElementById('slaTable').innerHTML=`<tr><th>Métrica</th><th>Meta</th><th>Criterio / penalidad</th></tr>`+
+  sla.map(s=>`<tr><td><b>${s[0]}</b></td><td class="tnum">${s[1]}</td><td class="sub">${s[2]}</td></tr>`).join('');
+const fases=[['Fase 1 · Análisis','Necesidad, presupuesto tope, modelo de contratación (T&M / squads) y ROI.'],['Fase 2 · Selección','Lanzamiento de RFP, matriz técnica vs. económica, NDA y SLA.'],['Fase 3 · Implementación','Onboarding, accesos y setup de entornos; monitoreo de Lead Time y Cycle Time en dashboards.']];
+document.getElementById('fases').innerHTML=fases.map((f,i)=>`<div class="svc"><div class="nm"><b>${f[0]}</b><span>${f[1]}</span></div><span class="tier">${i+1}</span></div>`).join('');
+
+/* ===== presupuesto ===== */
+const budget=[
+  ['Avance 1 (continuidad y terceros)',1240000,'var(--s1)'],
+  ['Personal adicional',144000,'var(--s3)'],
+  ['MFA / PAM',180000,'var(--s4)'],
+  ['EDR y segmentación',320000,'var(--s5)'],
+  ['Copias inmutables',280000,'var(--s7)'],
+  ['2.º ISP + anti-DDoS',360000,'var(--s2)'],
+  ['Gestión de crisis y simulacros',150000,'var(--good)'],
+];
+const bTotal=budget.reduce((a,b)=>a+b[1],0);
+document.getElementById('budgetBar').innerHTML=budget.map(b=>`<span style="width:${b[1]/bTotal*100}%;background:${b[2]}" title="${b[0]}: S/ ${b[1].toLocaleString('es-PE')}"></span>`).join('');
+document.getElementById('budgetLeg').innerHTML=budget.map(b=>`<div class="r"><span class="nm"><span class="sw" style="background:${b[2]}"></span>${b[0]}</span><span class="v">S/ ${(b[1]/1000).toLocaleString('es-PE')} K</span></div>`).join('')+`<div class="r" style="grid-column:1/-1;border-top:1px solid var(--grid);padding-top:8px;margin-top:4px"><span class="nm"><b style="color:var(--ink)">Total consolidado</b></span><span class="v"><b>S/ ${bTotal.toLocaleString('es-PE')}</b></span></div>`;
+
+/* ===== ARQUITECTURAS ===== */
+const archIcon={1:ICONS.IC_target,2:ICONS.IC_grid,3:ICONS.IC_box,4:ICONS.IC_layers};
+const arch=[
+ ['1','Arquitectura funcional','Procesos y funciones de negocio que la TI debe soportar',['Captación y ahorros','Colocaciones y créditos','Pagos y transferencias','Canales de atención','Gestión de riesgos','Cumplimiento SBS']],
+ ['2','Arquitectura de sistemas','Aplicaciones que ejecutan esas funciones',['Core bancario','App móvil','Banca por Internet','Plin','Tarjetas','CRM','Motor antifraude','SIEM / SOC']],
+ ['3','Arquitectura de datos','Cómo se organizan, protegen y gobiernan los datos',['Datos de 5.5 M clientes','Transacciones','Data lake / Data & AI','Gobierno y clasificación de datos','Copias inmutables']],
+ ['4','Arquitectura de infraestructura','La base física y de red sobre la que corre todo',['Datacenter principal','Sitio alterno (DRP)','Nube híbrida','Enlaces BGP redundantes','EDR','Red segmentada']],
+];
+document.getElementById('archStack').innerHTML=arch.map(a=>`<div class="arch-layer al${a[0]}">
+  <div class="ic">${archIcon[a[0]]}</div>
+  <div style="flex:1"><h3>${a[1]}</h3><div class="dsc">${a[2]}</div>
+    <div class="items">${a[3].map(x=>`<span class="ch">${x}</span>`).join('')}</div></div></div>`).join('');
+const archAdq=[
+ ['Core bancario','Desarrollo propietario (in-house)','Activo crítico; control total y cumplimiento'],
+ ['App y canales digitales','Desarrollo propio + co-sourcing','OBJ-4; equipo mixto con el banco'],
+ ['SIEM / SOC','Servicio gestionado (tercerizado)','Especialización 24/7 (OBJ-2)'],
+ ['Anti-DDoS y WAF','Servicio en la nube','Mitigación máx. 10 min (tarea 15)'],
+ ['Nube híbrida','IaaS / PaaS de proveedor','Escalabilidad y elasticidad'],
+ ['EDR','Licenciamiento (producto COTS)','Protección de endpoints (tarea 13)'],
+];
+document.getElementById('archTable').innerHTML=`<tr><th>Componente</th><th>Modalidad de adquisición</th><th>Justificación</th></tr>`+
+  archAdq.map(a=>`<tr><td><b>${a[0]}</b></td><td>${a[1]}</td><td class="sub">${a[2]}</td></tr>`).join('');
+
+/* ===== GOBIERNO DE TIC ===== */
+document.getElementById('govTiles').innerHTML=[
+  {k:'ISO 38500',l:'Norma de gobierno corporativo de TI'},{k:'COBIT',l:'Marco de gobierno y gestión de TI'},
+  {k:'E · D · M',l:'Evaluar, Dirigir y Monitorear'},{k:'Gobierno ≠ Gestión',l:'El directorio gobierna; el CIO gestiona'},
+].map(t=>`<div class="card tile"><div class="k" style="font-size:22px">${t.k}</div><div class="l">${t.l}</div></div>`).join('');
+document.getElementById('govOrg').innerHTML=`
+  <div class="node top">Directorio</div><div class="conn"></div>
+  <div class="node">Comité de Gobierno de TI</div><div class="conn"></div>
+  <div class="node cio">CIO · Chief Information Officer</div><div class="conn"></div>
+  <div class="row">
+    <div class="node">Seguridad (CISO)</div><div class="node">Continuidad</div>
+    <div class="node">Arquitectura</div><div class="node">Operaciones / NOC</div>
+  </div>`;
+document.getElementById('cio').innerHTML=`<dl class="tdr">
+  <dt>Funciones</dt><dd>Define la estrategia TIC alineada al negocio, preside el comité de TI y gestiona el presupuesto tecnológico.</dd>
+  <dt>Responsabilidades</dt><dd>Responde ante el directorio por el desempeño, los riesgos y el cumplimiento (SBS) de la plataforma; lidera la transformación digital y la continuidad.</dd>
+  <dt>Perfil</dt><dd>Visión estratégica + base técnica sólida; fuerte en gestión de proveedores, riesgos y personas.</dd></dl>`;
+document.getElementById('edm').innerHTML=[
+  ['Evaluar','Evaluar el uso actual y futuro de las TI'],['Dirigir','Dirigir planes y políticas hacia los objetivos'],['Monitorear','Monitorear el cumplimiento y el desempeño'],
+].map(e=>`<div class="e"><b>${e[0]}</b><span>${e[1]}</span></div>`).join('');
+const iso=[
+ ['Responsabilidad','Roles y responsabilidades de TI claros y aceptados.'],['Estrategia','La TI apoya y habilita la estrategia del negocio.'],
+ ['Adquisición','Las compras de TI se justifican y son transparentes.'],['Desempeño','La TI entrega el servicio requerido (SLA, disponibilidad).'],
+ ['Conformidad','Cumple la normativa y la regulación (SBS, protección de datos).'],['Comportamiento humano','Respeta a las personas en los procesos de TI.'],
+];
+document.getElementById('iso38500').innerHTML=iso.map((p,i)=>`<div class="pr"><div class="n">${i+1}</div><h4>${p[0]}</h4><p>${p[1]}</p></div>`).join('');
+const cobit=[
+ 'Satisfacer las necesidades de las partes interesadas','Cubrir la empresa de extremo a extremo','Aplicar un marco único integrado','Habilitar un enfoque holístico','Separar el gobierno de la gestión',
+];
+document.getElementById('cobit').innerHTML=cobit.map((p,i)=>`<div class="pr"><div class="n">${i+1}</div><h4>${p}</h4></div>`).join('');
+const cobitDom=[
+ ['EDM','Evaluar, Dirigir y Monitorear','Gobierno','Directorio / Comité de TI'],
+ ['APO','Alinear, Planificar y Organizar','Gestión','CIO'],
+ ['BAI','Construir, Adquirir e Implementar','Gestión','Arquitectura / Proyectos'],
+ ['DSS','Entregar, dar Servicio y Soporte','Gestión','Operaciones / NOC'],
+ ['MEA','Monitorear, Evaluar y Valorar','Gestión','Auditoría / Cumplimiento'],
+];
+document.getElementById('cobitDom').innerHTML=`<tr><th>Dominio</th><th>Significado</th><th>Nivel</th><th>Responsable</th></tr>`+
+  cobitDom.map(d=>`<tr><td><b>${d[0]}</b></td><td>${d[1]}</td><td><span class="ch" style="border-color:${d[2]==='Gobierno'?'var(--brand)':'var(--ring)'}">${d[2]}</span></td><td class="sub">${d[3]}</td></tr>`).join('');
+const orgTypes=[
+ ['Pequeña','Informal; las decisiones las toma el dueño','TI mayormente tercerizada'],
+ ['Mediana','Comités básicos y primeras políticas de TI','Mezcla de equipo interno y terceros'],
+ ['Grande (Interbank)','Gobierno corporativo formal: directorio, comité de TI y CIO con ISO 38500 y COBIT','Core interno + servicios gestionados; alta regulación (SBS)'],
+];
+document.getElementById('orgTypes').innerHTML=`<tr><th>Tamaño</th><th>Gobierno de TI</th><th>Modelo típico</th></tr>`+
+  orgTypes.map(o=>`<tr><td><b>${o[0]}</b></td><td class="sub">${o[1]}</td><td class="sub">${o[2]}</td></tr>`).join('');
+const cobitImpl=[
+ ['¿Cuáles son los motivos?','Detonantes del cambio: caídas de canales y exigencia de la SBS'],
+ ['¿Dónde estamos ahora?','Diagnóstico con el BIA y la madurez BCMM'],
+ ['¿Dónde queremos estar?','Metas: disponibilidad mín. 99.9 % y RTO máx. 2 h'],
+ ['¿Qué hay que hacer?','La hoja de ruta: las 17 tareas del plan'],
+ ['¿Cómo llegamos?','Ejecución del plan en 8 meses'],
+ ['¿Lo logramos?','Medición con el tablero BSC y sus 19 KPI'],
+ ['¿Cómo lo mantenemos?','Mejora continua y certificación ISO 22301'],
+];
+document.getElementById('cobitImpl').innerHTML=cobitImpl.map((c,i)=>`<div class="pr"><div class="n">${i+1}</div><h4>${c[0]}</h4><p>${c[1]}</p></div>`).join('');
+
+/* ===== SOURCING + EXPEDIENTE ===== */
+const sourcing=[
+ ['Insourcing','Se hace con el equipo interno del banco','Procesos core, sensibles o de ventaja competitiva','Core bancario, gobierno de datos, arquitectura'],
+ ['Outsourcing','Se delega a un proveedor especializado','Servicios no-core que requieren especialización','SOC 24/7, anti-DDoS, EDR, segundo ISP'],
+ ['Crowdsourcing','Inteligencia colectiva: muchos aportan','Tareas distribuibles, innovación y pruebas','Bug bounty del app, testing colaborativo, ideas de producto'],
+];
+document.getElementById('sourcingTable').innerHTML=`<tr><th>Modelo</th><th>Qué es</th><th>Cuándo conviene</th><th>Caso en Interbank</th></tr>`+
+  sourcing.map(s=>`<tr><td><b>${s[0]}</b></td><td class="sub">${s[1]}</td><td class="sub">${s[2]}</td><td>${s[3]}</td></tr>`).join('');
+const exped=[
+ ['TDR','Términos de Referencia: objetivo, alcance, entregables y perfil del proveedor.'],
+ ['Expediente de convocatoria (RFP)','Se arma el expediente y se convoca a proveedores con reglas claras.'],
+ ['Evaluación de propuestas','Matriz técnica/económica (40/30/30) para elegir al proveedor.'],
+ ['Negociación','Se ajustan alcance, precio, SLA y penalidades.'],
+ ['Suscripción del contrato','Firma del contrato con SLA, penalidades y niveles de servicio.'],
+ ['NDA y estrategia de salida','Acuerdo de confidencialidad y plan de reversibilidad (Res. SBS 1515-2021).'],
+];
+document.getElementById('expediente').innerHTML=exped.map((e,i)=>`<div class="svc"><span class="tier">${i+1}</span><div class="nm" style="flex:1"><b>${e[0]}</b><span>${e[1]}</span></div></div>`).join('');
+
+/* ===== BCMM ===== */
+const bcmm=[['1','Inicial','Reactivo, sin plan'],['2','Básico','Planes aislados'],['3','Gestionado','DRP y BIA formales'],['4','Establecido','Pruebas periódicas y métricas'],['5','Optimizado','Mejora continua · ISO 22301']];
+const bCur=1,bMeta=3; // actual = nivel 2, meta del plan = nivel 4
+document.getElementById('bcmm').innerHTML=bcmm.map((l,i)=>{
+  let c=i<bCur?'done':i===bCur?'cur':'';
+  let tag=i===bCur?'<span class="tagc">Actual</span>':i===bMeta?'<span class="tagc" style="background:var(--s1)">Meta plan</span>':'';
+  return `<div class="lv ${c}">${tag}<div class="num">Nivel ${l[0]}</div><div class="nm">${l[1]}</div><div class="num">${l[2]}</div></div>`;
+}).join('');
+document.getElementById('bcmmTxt').innerHTML='Interbank arranca en el <b>nivel 2 (Básico)</b>: tiene controles sueltos pero sin un programa formal probado. El plan lo lleva al <b>nivel 4 (Establecido)</b> con BIA, DRP, simulacros 2/año y métricas, en camino al nivel 5 con la certificación ISO 22301.';
+
+/* ===== bitácora ===== */
+const logs=[];
+const pool=[
+  ['ok','Verificación de enlaces BGP redundantes: OK en los 7 servicios.'],
+  ['ok','Backup inmutable completado · RPO 4 min.'],
+  ['info','MFA aplicado a nueva cuenta privilegiada.'],
+  ['ok','Health-check de la pasarela de pagos: 200 OK.'],
+  ['info','Escaneo EDR en servidores de core: sin hallazgos.'],
+  ['warn','Latencia elevada en Agentes (260 ms) · dentro de umbral.'],
+  ['ok','Prueba de conmutación programada registrada en el BSC.'],
+  ['info','Reporte de disponibilidad enviado al comité de seguridad.'],
+  ['ok','Scrubbing anti-DDoS validado · mitigación en 8 min.'],
+  ['info','Revisión de SLA de proveedor crítico: vigente.'],
+];
+function nowStr(){return new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+function log(level,msg){logs.unshift({t:nowStr(),level,msg});if(logs.length>40)logs.pop();renderLogs();}
+function renderLogs(){
+  const html=logs.map(e=>`<div class="e"><span class="lv lv-${e.level}"></span><span class="ts">${e.t}</span><span class="msg">${e.msg}</span></div>`).join('');
+  const full=document.getElementById('logFull');if(full)full.innerHTML=html;
+  const mini=document.getElementById('logMini');if(mini)mini.innerHTML=logs.slice(0,6).map(e=>`<div class="e"><span class="lv lv-${e.level}"></span><span class="ts">${e.t}</span><span class="msg">${e.msg}</span></div>`).join('');
+}
+// seed
+['ok','info','ok','info','ok','warn'].forEach((lv,i)=>{logs.push({t:nowStr(),level:lv,msg:pool[i][1]});});
+renderLogs();
+
+/* ===== live loops ===== */
+renderSvc();renderHero();drawAvail();drawDonut();
+setInterval(()=>{ // jitter de métricas
+  services.forEach(s=>{s.up=clamp(s.up+(Math.random()-.5)*0.03,99.70,99.95);s.lat=clamp(s.lat+(Math.random()-.5)*14,80,300);});
+  const alive=services.filter(s=>!(down&&s.t==='Tier 1'));
+  availHist.push(clamp(alive.reduce((a,s)=>a+s.up,0)/alive.length,99.70,99.95));if(availHist.length>24)availHist.shift();
+  if(!down){renderSvc();renderHero();drawAvail();}
+},3500);
+setInterval(()=>{if(!down){const p=pool[Math.floor(Math.random()*pool.length)];log(p[0],p[1]);}},9000);
+if(location.hash)openView(location.hash.slice(1));
+</script>
+</body>
+</html>
